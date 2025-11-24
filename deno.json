@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read main.ts",
+    "start": "deno run --allow-net --allow-read main.ts"
+  },
+  "imports": {
+    "@/": "./src/",
+    "@core/": "./src/core/",
+    "@controllers/": "./src/controllers/",
+    "@views/": "./src/views/",
+    "@services/": "./src/services/",
+    "@config/": "./src/config/"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.window"]
+  }
+}
