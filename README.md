@@ -10,6 +10,7 @@ A modern, responsive website for the Two Witness Project ministry - spreading th
 - 💝 **Donations Page**: Multiple ways to support the ministry
 - 📱 **Responsive Design**: Works perfectly on all devices
 - ⚡ **Fast & Lightweight**: Built with pure Deno, no frameworks
+- 🚀 **CI/CD Ready**: Automatic deployment to Deno Deploy via GitHub Actions
 
 ## Architecture
 
@@ -26,6 +27,9 @@ This project follows **SOLID principles** and clean architecture patterns:
 
 ```
 twowitnessproject/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml        # GitHub Actions deployment workflow
 ├── src/
 │   ├── core/                 # Core framework components
 │   │   ├── types.ts          # TypeScript interfaces
@@ -49,7 +53,8 @@ twowitnessproject/
 │   │   └── styles.css        # Responsive stylesheet
 │   └── images/               # Static images
 ├── main.ts                   # Application entry point
-└── deno.json                 # Deno configuration
+├── deno.json                 # Deno configuration
+└── deno.deploy.json          # Deno Deploy configuration
 ```
 
 ## Requirements
@@ -132,17 +137,74 @@ router.registerController(new BlogController());
 
 ## Deployment
 
-### Deploy to Deno Deploy (Recommended)
+### Deploy to Deno Deploy with GitHub Actions (Recommended)
+
+This repository is configured for automatic deployment to Deno Deploy via GitHub Actions.
+
+#### Initial Setup
+
+1. **Create a Deno Deploy Project**
+   - Go to [dash.deno.com](https://dash.deno.com)
+   - Sign in with your GitHub account
+   - Click "New Project"
+   - Choose "Empty Project" (don't link to GitHub yet)
+   - Name your project (e.g., `two-witness-project`)
+
+2. **Link GitHub Repository**
+   - In your Deno Deploy project settings, go to "Settings" → "Git Integration"
+   - Connect your GitHub repository
+   - Select the branch you want to deploy (e.g., `main` or `master`)
+   - The project will use the GitHub Action for deployment
+
+3. **Update Workflow Configuration**
+   - Edit `.github/workflows/deploy.yml`
+   - Change the `project` name to match your Deno Deploy project:
+     ```yaml
+     project: "your-project-name" # Change this to your actual project name
+     ```
+
+4. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Configure Deno Deploy"
+   git push origin main
+   ```
+
+5. **Automatic Deployment**
+   - Every push to `main` or `master` branch will trigger automatic deployment
+   - Pull requests will also be deployed to preview URLs
+   - Check the "Actions" tab in your GitHub repository to monitor deployments
+
+#### What the GitHub Action Does
+
+The workflow (`.github/workflows/deploy.yml`) automatically:
+- ✅ Checks out your code
+- ✅ Sets up Deno environment
+- ✅ Runs type checking (`deno check`)
+- ✅ Deploys to Deno Deploy
+- ✅ Provides preview URLs for pull requests
+
+#### Manual Deployment with deployctl
+
+If you prefer manual deployment:
 
 1. Install deployctl:
 ```bash
-deno install --allow-read --allow-write --allow-env --allow-net --allow-run --no-check -r -f https://deno.land/x/deploy/deployctl.ts
+deno install -Arf jsr:@deno/deployctl
 ```
 
 2. Deploy:
 ```bash
-deployctl deploy --project=twowitness main.ts
+deployctl deploy --project=your-project-name main.ts
 ```
+
+### Deploy to Deno Deploy (Dashboard Method)
+
+1. Go to [dash.deno.com](https://dash.deno.com)
+2. Create a new project
+3. Link your GitHub repository
+4. Set the entry point to `main.ts`
+5. Deploy automatically on every push
 
 ### Deploy to any VPS
 
@@ -153,6 +215,8 @@ curl -fsSL https://deno.land/x/install/install.sh | sh
 # Run as a service
 deno run --allow-net --allow-read main.ts
 ```
+
+For production VPS deployment, consider using a process manager like systemd or PM2.
 
 ## SOLID Principles Applied
 
