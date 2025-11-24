@@ -37,6 +37,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "two-witness-project" # Change this to your Deno Deploy project name
+          project: "twowitnessproject"
           entrypoint: "main.ts"
           root: "."
