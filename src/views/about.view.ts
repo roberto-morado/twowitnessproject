@@ -24,10 +24,10 @@ export function renderAbout(): string {
             <h2>Our Story</h2>
             <p>
               The Two Witness Project began when two friends received God's unmistakable call
-              to leave behind their conventional lives and dedicate themselves fully to
+              to abandon their conventional lives and dedicate themselves fully to
               evangelism. In obedience to this calling, we left everything behind, purchased
-              a van, and transformed it into our mobile home. To make this possible, we took on
-              debt, trusting that God will help us settle it according to His will.
+              a van, and transformed it into our mobile home. This step of faith required
+              taking on debt, trusting that God will provide according to His will.
             </p>
             <p>
               Now, we travel from city to city, state to state, bringing the message of
