@@ -55,7 +55,7 @@ export function renderHome(): string {
         <div class="social-buttons">
           <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener" class="btn btn-social">YouTube</a>
           <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener" class="btn btn-social">Instagram</a>
-          <a href="${AppConfig.socialMedia.facebook}" target="_blank" rel="noopener" class="btn btn-social">Facebook</a>
+          <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener" class="btn btn-social">Discord</a>
         </div>
       </div>
     </section>
