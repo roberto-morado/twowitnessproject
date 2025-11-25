@@ -1,20 +1,32 @@
 /**
  * Two Witness Project - Stylesheet
  * Modern, responsive design for ministry website
+ * Brand Colors: Rust, Sage, Cream, Dark
  */
 
-/* CSS Variables for theming */
+/* CSS Variables for theming - Brand Color Palette */
 :root {
-  --primary-color: #2c5aa0;
-  --secondary-color: #f39c12;
-  --dark-color: #2c3e50;
-  --light-color: #ecf0f1;
-  --text-color: #333;
-  --text-light: #666;
+  /* Brand Colors */
+  --brand-rust: #B7512E;        /* Primary accent - warm terracotta */
+  --brand-sage: #55766C;        /* Secondary accent - muted green */
+  --brand-cream: #F0DFC3;       /* Light background - warm beige */
+  --brand-dark: #191F1D;        /* Dark elements - almost black */
+
+  /* Functional Colors */
+  --primary-color: var(--brand-rust);
+  --primary-hover: #9a4225;     /* Darker rust for hover */
+  --secondary-color: var(--brand-sage);
+  --secondary-hover: #446052;   /* Darker sage for hover */
+  --dark-color: var(--brand-dark);
+  --light-color: var(--brand-cream);
+  --text-color: var(--brand-dark);
+  --text-light: #4a504e;        /* Lighter version of dark for secondary text */
   --white: #ffffff;
-  --border-color: #ddd;
-  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --border-color: #d4c4ac;      /* Muted version of cream */
+
+  /* Effects */
+  --shadow: 0 2px 10px rgba(25, 31, 29, 0.1);
+  --shadow-hover: 0 4px 20px rgba(25, 31, 29, 0.15);
   --border-radius: 8px;
   --transition: all 0.3s ease;
 }
@@ -95,7 +107,7 @@ body {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-color) 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--dark-color) 100%);
   color: var(--white);
   padding: 5rem 0;
   text-align: center;
@@ -141,12 +153,12 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   color: var(--white);
 }
 
 .btn-primary:hover {
-  background-color: #e67e22;
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
@@ -163,12 +175,12 @@ body {
 }
 
 .btn-social {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   color: var(--white);
 }
 
 .btn-social:hover {
-  background-color: var(--dark-color);
+  background-color: var(--secondary-hover);
   transform: translateY(-2px);
 }
 
@@ -241,7 +253,7 @@ body {
 
 /* Page Header */
 .page-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--dark-color) 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--dark-color) 100%);
   color: var(--white);
   padding: 3rem 0;
   text-align: center;
@@ -621,7 +633,7 @@ footer {
 
 .footer-section h3 {
   margin-bottom: 1rem;
-  color: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 .footer-section p {
@@ -642,7 +654,7 @@ footer {
 }
 
 .social-links a:hover {
-  color: var(--secondary-color);
+  color: var(--primary-color);
   padding-left: 0.5rem;
 }
 
