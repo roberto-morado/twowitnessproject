@@ -47,10 +47,10 @@ export function renderVideos(): string {
               <h3>TikTok</h3>
               <p>Short clips and highlights</p>
             </a>
-            <a href="${AppConfig.socialMedia.twitter}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">🐦</div>
-              <h3>Twitter</h3>
-              <p>Real-time updates</p>
+            <a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener" class="platform-card">
+              <div class="platform-icon">🧵</div>
+              <h3>Threads</h3>
+              <p>Updates and conversations</p>
             </a>
           </div>
         </div>
