@@ -114,8 +114,7 @@ a:hover {
 
 .nav-menu a:hover,
 .nav-menu a.active {
-  background-color: rgba(183, 81, 46, 0.2);
-  border-bottom: 2px solid var(--primary-color);
+  background-color: var(--primary-color);
 }
 
 /* Hero Section */
