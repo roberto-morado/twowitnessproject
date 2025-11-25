@@ -25,8 +25,9 @@ export function renderAbout(): string {
             <p>
               The Two Witness Project began when two friends received God's unmistakable call
               to leave behind their conventional lives and dedicate themselves fully to
-              evangelism. In obedience to this calling, we sold our possessions, purchased
-              a van, and spent months transforming it into a mobile home.
+              evangelism. In obedience to this calling, we left everything behind, purchased
+              a van, and transformed it into our mobile home. To make this possible, we took on
+              debt, trusting that God will help us settle it according to His will.
             </p>
             <p>
               Now, we travel from city to city, state to state, bringing the message of
@@ -38,8 +39,10 @@ export function renderAbout(): string {
             <p>
               Our name is inspired by Revelation 11:3 - "And I will appoint my two witnesses,
               and they will prophesy for 1,260 days, clothed in sackcloth." While we don't
-              claim to be the two witnesses of Revelation, we are inspired by their dedication
-              to boldly proclaim God's truth regardless of circumstances.
+              claim to be the two witnesses of Revelation, we understand this calling to be
+              one that will continue for the rest of our earthly lives, until our Father calls
+              us home. This ministry is not a season or a phase—it is our lifelong commitment
+              to proclaim the Gospel faithfully until the end.
             </p>
 
             <h2>What We Do</h2>
@@ -52,6 +55,11 @@ export function renderAbout(): string {
             </ul>
 
             <h2>Our Beliefs</h2>
+            <p>
+              We have been chosen according to the foreknowledge of God the Father, by the
+              sanctifying work of the Spirit, to obedience to Jesus Christ and the sprinkling
+              of His blood. <em>(1 Peter 1:2)</em>
+            </p>
             <p>
               We believe in the Bible as the inspired Word of God, salvation through Jesus
               Christ alone, and the power of the Holy Spirit. We are committed to sharing
