@@ -90,7 +90,7 @@ export function renderAbout(): string {
               <p>
                 We rely on God's provision through the generosity of supporters like you.
               </p>
-              <a href="/donate" class="btn btn-secondary">Donate</a>
+              <a href="/donate" class="btn btn-primary">Donate</a>
             </div>
           </div>
         </div>
