@@ -56,7 +56,7 @@ export function renderLayout(data: LayoutData): string {
           <div class="social-links">
             <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a>
             <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">Instagram</a>
-            <a href="${AppConfig.socialMedia.facebook}" target="_blank" rel="noopener">Facebook</a>
+            <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">Discord</a>
             <a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">Threads</a>
             <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">TikTok</a>
           </div>

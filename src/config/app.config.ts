@@ -24,7 +24,7 @@ export const AppConfig = {
   socialMedia: {
     youtube: "https://youtube.com/@twowitnessproject",
     instagram: "https://www.instagram.com/twowitnessproject/",
-    facebook: "#",
+    discord: "https://discord.gg/wASmHhjMna",
     threads: "https://www.threads.com/@twowitnessproject",
     tiktok: "https://www.tiktok.com/@twowitnessproject",
   },
