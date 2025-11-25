@@ -37,10 +37,10 @@ export function renderVideos(): string {
               <h3>Instagram</h3>
               <p>Daily updates and stories</p>
             </a>
-            <a href="${AppConfig.socialMedia.facebook}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">👥</div>
-              <h3>Facebook</h3>
-              <p>Connect with our community</p>
+            <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener" class="platform-card">
+              <div class="platform-icon">💬</div>
+              <h3>Discord</h3>
+              <p>Join our community server</p>
             </a>
             <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener" class="platform-card">
               <div class="platform-icon">🎵</div>
