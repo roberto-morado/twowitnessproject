@@ -22,11 +22,11 @@ export const AppConfig = {
 
   // Social media links
   socialMedia: {
-    youtube: "#",
-    instagram: "#",
+    youtube: "https://youtube.com/@twowitnessproject",
+    instagram: "https://www.instagram.com/twowitnessproject/",
     facebook: "#",
-    twitter: "#",
-    tiktok: "#",
+    threads: "https://www.threads.com/@twowitnessproject",
+    tiktok: "https://www.tiktok.com/@twowitnessproject",
   },
 
   // Donation information
