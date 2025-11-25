@@ -23,7 +23,7 @@ export function renderAbout(): string {
 
             <h2>Our Story</h2>
             <p>
-              The Two Witness Project began when two friends felt God's unmistakable call
+              The Two Witness Project began when two friends received God's unmistakable call
               to leave behind their conventional lives and dedicate themselves fully to
               evangelism. In obedience to this calling, we sold our possessions, purchased
               a van, and spent months transforming it into a mobile home.
