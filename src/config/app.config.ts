@@ -31,9 +31,6 @@ export const AppConfig = {
 
   // Donation information
   donations: {
-    paypalEmail: "donations@twowitness.org", // Replace with actual email
-    venmo: "@twowitness", // Replace with actual handle
-    cashapp: "$twowitness", // Replace with actual handle
     message:
       "Your support helps us continue our ministry and reach more people with the Gospel. Every donation, no matter the size, makes a difference.",
   },

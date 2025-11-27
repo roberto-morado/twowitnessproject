@@ -22,6 +22,7 @@ export function renderLayout(data: LayoutData): string {
   <meta name="description" content="${AppConfig.ministry.description}">
   <title>${title} - ${AppConfig.ministry.name}</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
 </head>
 <body>
   <header>
