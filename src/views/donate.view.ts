@@ -26,54 +26,21 @@ export function renderDonate(): string {
           </p>
         </div>
 
-        <div class="donation-methods">
-          <h2>Ways to Give</h2>
-          <div class="method-grid">
-            <div class="method-card">
-              <div class="method-icon">💳</div>
-              <h3>PayPal</h3>
-              <p>Send a one-time or recurring donation</p>
-              <div class="method-info">
-                <code>${AppConfig.donations.paypalEmail}</code>
-              </div>
-              <a href="https://paypal.me/${AppConfig.donations.paypalEmail.split("@")[0]}"
-                 target="_blank"
-                 rel="noopener"
-                 class="btn btn-primary">
-                Donate via PayPal
-              </a>
-            </div>
-
-            <div class="method-card">
-              <div class="method-icon">📱</div>
-              <h3>Venmo</h3>
-              <p>Quick and easy mobile payments</p>
-              <div class="method-info">
-                <code>${AppConfig.donations.venmo}</code>
-              </div>
-              <a href="https://venmo.com/${AppConfig.donations.venmo.slice(1)}"
-                 target="_blank"
-                 rel="noopener"
-                 class="btn btn-primary">
-                Donate via Venmo
-              </a>
-            </div>
-
-            <div class="method-card">
-              <div class="method-icon">💰</div>
-              <h3>Cash App</h3>
-              <p>Support us through Cash App</p>
-              <div class="method-info">
-                <code>${AppConfig.donations.cashapp}</code>
-              </div>
-              <a href="https://cash.app/${AppConfig.donations.cashapp.slice(1)}"
-                 target="_blank"
-                 rel="noopener"
-                 class="btn btn-primary">
-                Donate via Cash App
-              </a>
-            </div>
+        <div class="donation-stripe">
+          <h2>Make a Donation</h2>
+          <p class="stripe-description">
+            Support our ministry with a secure donation through Stripe.
+            You can use any major credit card, debit card, or digital wallet.
+          </p>
+          <div class="stripe-button-container">
+            <stripe-buy-button
+              buy-button-id="buy_btn_1SY5XAIMgZeCxahQcT2rJ7FW"
+              publishable-key="pk_live_51SXuJ2IMgZeCxahQOmE9llI6AYzHStXcGnyKGIRd9Y3a9evnWTKY9KdLh6yOYbNMp20JvsjAZIbVpu0W5QWjBj2U00NEnK31rB">
+            </stripe-buy-button>
           </div>
+          <p class="stripe-secure">
+            🔒 Secure payment powered by Stripe
+          </p>
         </div>
 
         <div class="donation-impact">
