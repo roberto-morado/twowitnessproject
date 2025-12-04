@@ -28,37 +28,31 @@ export function renderVideos(): string {
           <h2>Find Us On</h2>
           <div class="platform-grid">
             <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">▶️</div>
-              <h3>YouTube</h3>
+              <h3>▶️ YouTube</h3>
               <p>Full-length videos and vlogs</p>
             </a>
             <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">📷</div>
-              <h3>Instagram</h3>
+              <h3>📷 Instagram</h3>
               <p>Daily updates and stories</p>
             </a>
             <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">💬</div>
-              <h3>Discord</h3>
+              <h3>💬 Discord</h3>
               <p>Join our community server</p>
             </a>
             <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">🎵</div>
-              <h3>TikTok</h3>
+              <h3>🎵 TikTok</h3>
               <p>Short clips and highlights</p>
             </a>
             <a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener" class="platform-card">
-              <div class="platform-icon">🧵</div>
-              <h3>Threads</h3>
+              <h3>🧵 Threads</h3>
               <p>Updates and conversations</p>
             </a>
           </div>
         </div>
 
         <div class="video-placeholder">
-          <h2>Latest Videos</h2>
+          <h2>🎬 Latest Videos</h2>
           <div class="placeholder-message">
-            <div class="placeholder-icon">🎬</div>
             <p>
               We're just getting started on our journey! Our first videos are coming soon.
               In the meantime, follow us on social media to see behind-the-scenes content
