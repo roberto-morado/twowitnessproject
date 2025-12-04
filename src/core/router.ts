@@ -6,9 +6,19 @@
 
 import type { Route, RouteHandler, Controller } from "./types.ts";
 import { ResponseFactory } from "./response.ts";
+import { MiddlewareChain, type MiddlewareFunction } from "./middleware.ts";
 
 export class Router {
   private routes: Route[] = [];
+  private globalMiddleware = new MiddlewareChain();
+
+  /**
+   * Use global middleware
+   */
+  use(middleware: MiddlewareFunction): this {
+    this.globalMiddleware.use(middleware);
+    return this;
+  }
 
   /**
    * Register a controller (Dependency Injection)
@@ -26,9 +36,19 @@ export class Router {
   }
 
   /**
-   * Handle incoming request
+   * Handle incoming request with middleware chain
    */
   async handle(request: Request): Promise<Response> {
+    // Execute global middleware chain
+    return await this.globalMiddleware.execute(request, async () => {
+      return await this.handleRoute(request);
+    });
+  }
+
+  /**
+   * Handle route matching and execution
+   */
+  private async handleRoute(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const method = request.method;
 

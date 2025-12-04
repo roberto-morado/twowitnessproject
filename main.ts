@@ -17,25 +17,46 @@
 
 import { Router } from "./src/core/router.ts";
 import { AppConfig } from "./src/config/app.config.ts";
+import { db } from "./src/services/db.service.ts";
+import { AuthService } from "./src/services/auth.service.ts";
+import {
+  securityHeadersMiddleware,
+  cacheHeadersMiddleware,
+  analyticsMiddleware,
+} from "./src/core/middleware.ts";
 
 // Import controllers
 import { HomeController } from "./src/controllers/home.controller.ts";
 import { AboutController } from "./src/controllers/about.controller.ts";
 import { VideosController } from "./src/controllers/videos.controller.ts";
 import { DonateController } from "./src/controllers/donate.controller.ts";
+import { AuthController } from "./src/controllers/auth.controller.ts";
 
 /**
  * Bootstrap the application
  * Dependency Injection: Controllers are instantiated and injected into the router
  */
-function bootstrap(): Router {
+async function bootstrap(): Promise<Router> {
+  // Initialize Deno KV connection
+  await db.connect();
+
+  // Initialize admin user from environment variables
+  await AuthService.initializeAdmin();
+
   const router = new Router();
+
+  // Register global middleware (order matters!)
+  router
+    .use(cacheHeadersMiddleware)
+    .use(analyticsMiddleware)
+    .use(securityHeadersMiddleware);
 
   // Register controllers (Dependency Injection)
   router.registerController(new HomeController());
   router.registerController(new AboutController());
   router.registerController(new VideosController());
   router.registerController(new DonateController());
+  router.registerController(new AuthController());
 
   return router;
 }
@@ -44,7 +65,7 @@ function bootstrap(): Router {
  * Main server function
  */
 async function main() {
-  const router = bootstrap();
+  const router = await bootstrap();
 
   console.log(`
 ╔════════════════════════════════════════════════════════╗
