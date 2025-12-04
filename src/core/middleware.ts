@@ -4,6 +4,7 @@
  */
 
 import { AuthService } from "../services/auth.service.ts";
+import { AnalyticsService } from "../services/analytics.service.ts";
 
 export type MiddlewareFunction = (
   request: Request,
@@ -171,12 +172,26 @@ export const analyticsMiddleware: MiddlewareFunction = async (
 
   const response = await context.next();
 
-  // After response is generated, save analytics asynchronously
+  // After response is generated, save analytics asynchronously (don't await to avoid blocking)
   if (shouldTrack && context.data.has("trackPageView")) {
-    const analyticsData = context.data.get("trackPageView");
-    // We'll implement the actual saving in the analytics service
-    // For now, just store the data
-    context.data.set("analytics", analyticsData);
+    const analyticsData = context.data.get("trackPageView") as {
+      path: string;
+      referrer: string | null;
+      userAgent: string | null;
+    };
+
+    // Get IP from connection info (if available)
+    const ip = request.headers.get("X-Forwarded-For")?.split(",")[0].trim() ||
+               request.headers.get("X-Real-IP") ||
+               null;
+
+    // Save analytics in background (don't block response)
+    AnalyticsService.trackPageView(
+      analyticsData.path,
+      analyticsData.referrer,
+      analyticsData.userAgent,
+      ip
+    ).catch(err => console.error("Analytics tracking error:", err));
   }
 
   return response;
