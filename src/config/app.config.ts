@@ -23,6 +23,9 @@ export const AppConfig = {
   // Social media links
   socialMedia: {
     youtube: "https://youtube.com/@twowitnessproject",
+    // YouTube Channel ID for RSS feed (find in YouTube Studio > Settings > Channel > Advanced)
+    // RSS feeds require the channel ID, not the @handle
+    youtubeChannelId: "", // Add your channel ID here (format: UCxxxxxxxxxxxxxxxxxxxx)
     instagram: "https://www.instagram.com/twowitnessproject/",
     discord: "https://discord.gg/wASmHhjMna",
     threads: "https://www.threads.com/@twowitnessproject",
