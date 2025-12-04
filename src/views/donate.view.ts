@@ -32,13 +32,33 @@ export function renderDonate(): string {
             Support our ministry with a secure donation through Stripe.
             You can use any major credit card, debit card, or digital wallet.
           </p>
+
+          <h3>One-Time Donation</h3>
+          <p>Give a single gift to support our ministry today.</p>
           <div class="stripe-button-container">
             <stripe-buy-button
               buy-button-id="buy_btn_1SY5XAIMgZeCxahQcT2rJ7FW"
               publishable-key="pk_live_51SXuJ2IMgZeCxahQOmE9llI6AYzHStXcGnyKGIRd9Y3a9evnWTKY9KdLh6yOYbNMp20JvsjAZIbVpu0W5QWjBj2U00NEnK31rB">
             </stripe-buy-button>
           </div>
-          <p class="stripe-secure">
+
+          <h3 style="margin-top: 3rem;">Monthly Recurring Support</h3>
+          <p>Become a monthly partner and provide ongoing support for our ministry.</p>
+          <div class="stripe-button-container">
+            <!-- To enable recurring donations:
+                 1. Log into Stripe Dashboard (https://dashboard.stripe.com)
+                 2. Go to Products > Add Product
+                 3. Create a new product with "Recurring" payment type (monthly)
+                 4. Click "Create a payment link" or "Create a buy button"
+                 5. Copy the buy-button-id and replace the placeholder below
+                 6. The publishable key is the same as the one-time donation -->
+            <stripe-buy-button
+              buy-button-id="buy_btn_RECURRING_PLACEHOLDER"
+              publishable-key="pk_live_51SXuJ2IMgZeCxahQOmE9llI6AYzHStXcGnyKGIRd9Y3a9evnWTKY9KdLh6yOYbNMp20JvsjAZIbVpu0W5QWjBj2U00NEnK31rB">
+            </stripe-buy-button>
+          </div>
+
+          <p class="stripe-secure" style="margin-top: 2rem;">
             🔒 Secure payment powered by Stripe
           </p>
         </div>

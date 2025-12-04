@@ -127,7 +127,7 @@ export function renderLayout(data: LayoutData): string {
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved.</p>
+        <p>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></p>
       </div>
     </div>
   </footer>
