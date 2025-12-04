@@ -1,3 +1,5 @@
+/// <reference lib="deno.unstable" />
+
 /**
  * Database Service - Deno KV wrapper
  * Provides CRUD operations and key naming conventions

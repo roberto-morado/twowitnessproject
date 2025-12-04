@@ -66,7 +66,7 @@ export class AuthController implements Controller {
 
       if (!username || !password) {
         const html = renderLogin({ error: "Username and password are required" });
-        return ResponseFactory.html(html, 400);
+        return ResponseFactory.html(html, { status: 400 });
       }
 
       // Attempt login
@@ -74,7 +74,7 @@ export class AuthController implements Controller {
 
       if (!sessionId) {
         const html = renderLogin({ error: "Invalid username or password" });
-        return ResponseFactory.html(html, 401);
+        return ResponseFactory.html(html, { status: 401 });
       }
 
       // Login successful, set cookie and redirect
@@ -88,7 +88,7 @@ export class AuthController implements Controller {
     } catch (error) {
       console.error("Login error:", error);
       const html = renderLogin({ error: "An error occurred during login" });
-      return ResponseFactory.html(html, 500);
+      return ResponseFactory.html(html, { status: 500 });
     }
   }
 

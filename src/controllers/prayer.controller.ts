@@ -68,7 +68,7 @@ export class PrayerController implements Controller {
 
       if (!prayer || prayer.trim().length === 0) {
         const html = renderPray({ error: "Prayer text is required" });
-        return ResponseFactory.html(html, 400);
+        return ResponseFactory.html(html, { status: 400 });
       }
 
       const submission: PrayerSubmission = {
@@ -85,7 +85,7 @@ export class PrayerController implements Controller {
     } catch (error) {
       console.error("Prayer submission error:", error);
       const html = renderPray({ error: "An error occurred while submitting your prayer" });
-      return ResponseFactory.html(html, 500);
+      return ResponseFactory.html(html, { status: 500 });
     }
   }
 
@@ -160,7 +160,7 @@ export class PrayerController implements Controller {
    */
   private async markPrayerAsPrayed(
     request: Request,
-    params: Record<string, string>
+    params?: Record<string, string>
   ): Promise<Response> {
     // Check authentication
     const cookieHeader = request.headers.get("Cookie");
@@ -177,7 +177,10 @@ export class PrayerController implements Controller {
     }
 
     try {
-      const prayerId = params["0"]; // Regex capture group
+      const prayerId = params?.["0"]; // Regex capture group
+      if (!prayerId) {
+        return ResponseFactory.error("Invalid prayer ID", 400);
+      }
       const success = await PrayerService.markAsPrayed(prayerId);
 
       if (!success) {
@@ -196,7 +199,7 @@ export class PrayerController implements Controller {
    */
   private async deletePrayer(
     request: Request,
-    params: Record<string, string>
+    params?: Record<string, string>
   ): Promise<Response> {
     // Check authentication
     const cookieHeader = request.headers.get("Cookie");
@@ -213,7 +216,10 @@ export class PrayerController implements Controller {
     }
 
     try {
-      const prayerId = params["0"]; // Regex capture group
+      const prayerId = params?.["0"]; // Regex capture group
+      if (!prayerId) {
+        return ResponseFactory.error("Invalid prayer ID", 400);
+      }
       const success = await PrayerService.deletePrayer(prayerId);
 
       if (!success) {
