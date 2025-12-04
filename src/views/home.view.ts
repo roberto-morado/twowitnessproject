@@ -44,6 +44,26 @@ export function renderHome(): string {
       </div>
     </section>
 
+    <section class="prayer-invitation">
+      <div class="container">
+        <h2>🙏 We'd Love to Pray for You</h2>
+        <p>
+          As we travel this journey, one of our greatest privileges is lifting others up in prayer.
+          Whether you're facing a challenge, celebrating a blessing, or simply need someone to stand
+          with you in faith—we're here for you.
+        </p>
+        <p>
+          You can share your prayer request anonymously or include your name. Choose to make it public
+          so our community can pray with you, or keep it private between you and God. Every request
+          matters, and we take each one seriously.
+        </p>
+        <div class="hero-actions">
+          <a href="/pray" class="btn btn-primary">Submit a Prayer Request</a>
+          <a href="/prayers" class="btn btn-secondary">View Community Prayers</a>
+        </div>
+      </div>
+    </section>
+
     <section class="cta">
       <div class="container">
         <h2>Join Us on This Journey</h2>
