@@ -11,8 +11,8 @@ export class PrivacyController implements Controller {
   getRoutes(): Route[] {
     return [
       {
-        path: "/privacy",
         method: "GET",
+        pattern: "/privacy",
         handler: this.handlePrivacy.bind(this),
       },
     ];
