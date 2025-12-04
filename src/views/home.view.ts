@@ -61,5 +61,23 @@ export function renderHome(): string {
     title: "Home",
     content,
     activeNav: "home",
+    description: "Two friends living in a van, traveling across America to share the Gospel through street evangelism. Join us on our faith journey.",
+    ogTitle: "Two Witness Project - Street Evangelism Across America",
+    ogDescription: "Living by faith in a van, bringing the Gospel to cities across the nation. Watch our journey and support our ministry.",
+    canonicalUrl: "https://twowitnessproject.org/",
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": AppConfig.ministry.name,
+      "description": AppConfig.ministry.description,
+      "url": "https://twowitnessproject.org",
+      "sameAs": [
+        AppConfig.socialMedia.youtube,
+        AppConfig.socialMedia.instagram,
+        AppConfig.socialMedia.tiktok,
+        AppConfig.socialMedia.discord,
+        AppConfig.socialMedia.threads,
+      ],
+    },
   });
 }
