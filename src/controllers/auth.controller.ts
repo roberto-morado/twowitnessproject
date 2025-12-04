@@ -93,7 +93,7 @@ export class AuthController implements Controller {
   }
 
   /**
-   * GET /dashboard - Show dashboard (requires auth)
+   * GET /dashboard - Redirect to dashboard prayers (requires auth)
    */
   private async showDashboard(request: Request): Promise<Response> {
     // Check authentication
@@ -110,9 +110,8 @@ export class AuthController implements Controller {
       return ResponseFactory.redirect("/login");
     }
 
-    // Show dashboard
-    const html = renderDashboard(username);
-    return ResponseFactory.html(html);
+    // Redirect to prayers dashboard (default tab)
+    return ResponseFactory.redirect("/dashboard/prayers");
   }
 
   /**

@@ -31,6 +31,7 @@ import { AboutController } from "./src/controllers/about.controller.ts";
 import { VideosController } from "./src/controllers/videos.controller.ts";
 import { DonateController } from "./src/controllers/donate.controller.ts";
 import { AuthController } from "./src/controllers/auth.controller.ts";
+import { PrayerController } from "./src/controllers/prayer.controller.ts";
 
 /**
  * Bootstrap the application
@@ -57,6 +58,7 @@ async function bootstrap(): Promise<Router> {
   router.registerController(new VideosController());
   router.registerController(new DonateController());
   router.registerController(new AuthController());
+  router.registerController(new PrayerController());
 
   return router;
 }
