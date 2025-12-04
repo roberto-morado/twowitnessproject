@@ -3,8 +3,8 @@
  * Handles privacy policy page
  */
 
-import { Controller, Route } from "../core/router.ts";
-import { ResponseFactory } from "../core/response.ts";
+import type { Controller, Route } from "@core/types.ts";
+import { ResponseFactory } from "@core/response.ts";
 import { renderPrivacy } from "../views/privacy.view.ts";
 
 export class PrivacyController implements Controller {

@@ -1,3 +1,5 @@
+/// <reference lib="deno.unstable" />
+
 /**
  * Two Witness Project - Main Entry Point
  *

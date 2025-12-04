@@ -93,7 +93,7 @@ export class ResponseFactory {
         },
       });
     } catch {
-      return ResponseFactory.notFound("File not found");
+      return ResponseFactory.notFound();
     }
   }
 

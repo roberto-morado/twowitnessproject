@@ -44,18 +44,19 @@ export class AnalyticsService {
   /**
    * Anonymize IP address by hashing
    */
-  private static anonymizeIp(ip: string | null): string {
+  private static async anonymizeIp(ip: string | null): Promise<string> {
     if (!ip) return "unknown";
 
     // Hash the IP for privacy
     const encoder = new TextEncoder();
     const data = encoder.encode(ip + "salt-twp"); // Add salt for extra privacy
-    return crypto.subtle.digest("SHA-256", data)
-      .then(buffer => {
-        const hashArray = Array.from(new Uint8Array(buffer));
-        return hashArray.map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
-      })
-      .catch(() => "unknown");
+    try {
+      const buffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(buffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+    } catch {
+      return "unknown";
+    }
   }
 
   /**
