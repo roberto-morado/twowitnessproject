@@ -34,4 +34,15 @@ export const AppConfig = {
     message:
       "Your support helps us continue our ministry and reach more people with the Gospel. Every donation, no matter the size, makes a difference.",
   },
+
+  // Data retention configuration (days)
+  dataRetention: {
+    analytics: 90, // Keep analytics data for 90 days
+    prayedPrayers: 30, // Keep prayed prayers for 30 days
+  },
+
+  // Contact information
+  contact: {
+    email: "ministry@twowitnessproject.org",
+  },
 } as const;

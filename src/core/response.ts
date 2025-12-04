@@ -5,6 +5,7 @@
  */
 
 import type { ResponseConfig } from "./types.ts";
+import { render404 } from "../views/404.view.ts";
 
 export class ResponseFactory {
   /**
@@ -48,26 +49,8 @@ export class ResponseFactory {
   /**
    * Create 404 Not Found response
    */
-  static notFound(message = "Page not found"): Response {
-    return ResponseFactory.html(
-      `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Not Found</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-  <div class="container error-page">
-    <h1>404</h1>
-    <p>${message}</p>
-    <a href="/" class="btn">Go Home</a>
-  </div>
-</body>
-</html>`,
-      { status: 404 }
-    );
+  static notFound(): Response {
+    return ResponseFactory.html(render404(), { status: 404 });
   }
 
   /**

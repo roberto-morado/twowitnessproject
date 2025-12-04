@@ -62,6 +62,14 @@ a:hover {
   text-decoration: none;
 }
 
+a:focus,
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
 blockquote {
   margin: 20px 0;
   padding-left: 20px;
@@ -138,7 +146,7 @@ main {
 /* Buttons */
 .btn {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 12px 24px;
   margin: 10px 10px 10px 0;
   background: #fff;
   color: #000;
@@ -146,11 +154,18 @@ main {
   text-decoration: none;
   font-weight: bold;
   cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .btn:hover {
   background: #000;
   color: #fff;
+}
+
+.btn:focus {
+  outline: 3px solid #000;
+  outline-offset: 2px;
 }
 
 /* Grid Layouts */
