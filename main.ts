@@ -19,6 +19,7 @@ import { Router } from "./src/core/router.ts";
 import { AppConfig } from "./src/config/app.config.ts";
 import { db } from "./src/services/db.service.ts";
 import { AuthService } from "./src/services/auth.service.ts";
+import { CleanupService } from "./src/services/cleanup.service.ts";
 import {
   securityHeadersMiddleware,
   cacheHeadersMiddleware,
@@ -66,6 +67,21 @@ async function bootstrap(): Promise<Router> {
 }
 
 /**
+ * Setup Deno cron jobs
+ */
+function setupCronJobs() {
+  // Daily cleanup job at 2:00 AM
+  Deno.cron("Daily cleanup", "0 2 * * *", async () => {
+    await CleanupService.runCleanup(
+      AppConfig.dataRetention.analytics,
+      AppConfig.dataRetention.prayedPrayers
+    );
+  });
+
+  console.log("✓ Cron jobs scheduled (daily cleanup at 2:00 AM)");
+}
+
+/**
  * Main server function
  */
 async function main() {
@@ -80,9 +96,13 @@ async function main() {
 
 Server running at: http://${AppConfig.server.hostname}:${AppConfig.server.port}
 Environment: ${Deno.env.get("DENO_ENV") || "development"}
+Data Retention: Analytics ${AppConfig.dataRetention.analytics} days, Prayers ${AppConfig.dataRetention.prayedPrayers} days
 
 Press Ctrl+C to stop the server
   `);
+
+  // Setup automated cleanup
+  setupCronJobs();
 
   // Start the server using Deno.serve()
   await Deno.serve(
