@@ -4,7 +4,7 @@
  */
 
 import { AppConfig } from "@config/app.config.ts";
-import { CsrfService } from "../services/csrf.service.ts";
+import { CsrfService } from "../../services/csrf.service.ts";
 
 export interface LoginViewData {
   error?: string;
