@@ -39,6 +39,7 @@ import { AnalyticsController } from "./src/controllers/analytics.controller.ts";
 import { SEOController } from "./src/controllers/seo.controller.ts";
 import { PrivacyController } from "./src/controllers/privacy.controller.ts";
 import { SettingsController } from "./src/controllers/settings.controller.ts";
+import { TestimonialController } from "./src/controllers/testimonial.controller.ts";
 
 /**
  * Bootstrap the application
@@ -66,6 +67,7 @@ async function bootstrap(): Promise<Router> {
   router.registerController(new DonateController());
   router.registerController(new AuthController());
   router.registerController(new PrayerController());
+  router.registerController(new TestimonialController());
   router.registerController(new AnalyticsController());
   router.registerController(new SEOController());
   router.registerController(new PrivacyController());
