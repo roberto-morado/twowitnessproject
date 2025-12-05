@@ -241,7 +241,7 @@ export function renderAdminTestimonials(data: AdminTestimonialsViewData): string
   return renderDashboardLayout({
     title: "Testimonials",
     content,
-    activeTab: undefined, // No specific tab for testimonials
+    activeTab: "testimonials",
     username,
   });
 }
