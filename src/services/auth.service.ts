@@ -5,6 +5,7 @@
 
 import { db, KvKeys } from "./db.service.ts";
 import { scrypt, randomBytes, timingSafeEqual } from "node:crypto";
+import { Buffer } from "node:buffer";
 import { promisify } from "node:util";
 
 const scryptAsync = promisify(scrypt);
@@ -43,8 +44,7 @@ export class AuthService {
     const derivedKey = await scryptAsync(
       password,
       salt,
-      this.SCRYPT_KEY_LENGTH,
-      { N: this.SCRYPT_COST }
+      this.SCRYPT_KEY_LENGTH
     ) as Buffer;
 
     // Return salt:hash format for storage
@@ -65,8 +65,7 @@ export class AuthService {
     const derivedKey = await scryptAsync(
       password,
       salt,
-      this.SCRYPT_KEY_LENGTH,
-      { N: this.SCRYPT_COST }
+      this.SCRYPT_KEY_LENGTH
     ) as Buffer;
 
     // Timing-safe comparison prevents timing attacks
