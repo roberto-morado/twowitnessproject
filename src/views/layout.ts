@@ -4,6 +4,7 @@
  */
 
 import { AppConfig } from "@config/app.config.ts";
+import { renderNotification, type NotificationOptions } from "./components/notification.ts";
 
 export interface LayoutData {
   title: string;
@@ -16,6 +17,7 @@ export interface LayoutData {
   ogType?: string;
   canonicalUrl?: string;
   structuredData?: object;
+  notification?: NotificationOptions;
 }
 
 export function renderLayout(data: LayoutData): string {
@@ -30,6 +32,7 @@ export function renderLayout(data: LayoutData): string {
     ogType = "website",
     canonicalUrl = "",
     structuredData,
+    notification,
   } = data;
 
   // Generate emoji favicon SVG
@@ -82,6 +85,7 @@ export function renderLayout(data: LayoutData): string {
   ${activeNav === "donate" ? '<script async src="https://js.stripe.com/v3/buy-button.js"></script>' : ""}
 </head>
 <body>
+  ${notification ? renderNotification(notification) : ""}
   <header>
     <nav class="navbar">
       <div class="container">
@@ -132,6 +136,9 @@ export function renderLayout(data: LayoutData): string {
       </div>
     </div>
   </footer>
+
+  <!-- Form Loading States -->
+  <script src="/js/forms.js"></script>
 </body>
 </html>`;
 }

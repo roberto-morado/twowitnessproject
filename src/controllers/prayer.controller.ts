@@ -12,6 +12,8 @@ import { PrayerService, type PrayerSubmission } from "../services/prayer.service
 import { renderPray } from "../views/pray.view.ts";
 import { renderPrayers } from "../views/prayers.view.ts";
 import { renderAdminPrayers } from "../views/admin/prayers.view.ts";
+import { createNotificationRedirect } from "../utils/redirect.ts";
+import { getNotificationFromUrl } from "../views/components/notification.ts";
 
 export class PrayerController implements Controller {
   getRoutes(): Route[] {
@@ -52,10 +54,14 @@ export class PrayerController implements Controller {
   /**
    * GET /pray - Show prayer submission form
    */
-  private showPrayForm(): Response {
+  private showPrayForm(request: Request): Response {
     // Generate CSRF token for the form
     const csrfToken = CsrfService.generateToken();
-    const html = renderPray({ csrfToken });
+
+    // Extract notification from URL if present
+    const notification = getNotificationFromUrl(request.url);
+
+    const html = renderPray({ csrfToken, notification });
 
     // Return HTML with CSRF cookie
     return new Response(html, {
@@ -160,15 +166,12 @@ export class PrayerController implements Controller {
 
       await PrayerService.submitPrayer(submission);
 
-      const csrfToken = CsrfService.generateToken();
-      const html = renderPray({ success: true, csrfToken });
-      return new Response(html, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/html; charset=utf-8",
-          "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
-        },
-      });
+      // Redirect with success notification
+      return createNotificationRedirect(
+        "/pray",
+        "Thank you! Your prayer request has been received. We will be praying for you.",
+        "success"
+      );
     } catch (error) {
       console.error("Prayer submission error:", error);
       const csrfToken = CsrfService.generateToken();
