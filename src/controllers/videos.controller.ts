@@ -6,6 +6,7 @@
 import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "@core/response.ts";
 import { renderVideos } from "@views/videos.view.ts";
+import { YouTubeService } from "../services/youtube.service.ts";
 
 export class VideosController implements Controller {
   getRoutes(): Route[] {
@@ -18,8 +19,11 @@ export class VideosController implements Controller {
     ];
   }
 
-  private index(): Response {
-    const html = renderVideos();
+  private async index(): Promise<Response> {
+    // Fetch latest videos from YouTube RSS feed
+    const videos = await YouTubeService.getLatestVideos(6);
+
+    const html = renderVideos({ videos });
     return ResponseFactory.html(html);
   }
 }

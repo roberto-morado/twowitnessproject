@@ -4,8 +4,14 @@
 
 import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
+import type { YouTubeVideo } from "../services/youtube.service.ts";
 
-export function renderVideos(): string {
+export interface VideosViewData {
+  videos: YouTubeVideo[];
+}
+
+export function renderVideos(data: VideosViewData = { videos: [] }): string {
+  const { videos } = data;
   const content = `
     <section class="page-header">
       <div class="container">
@@ -50,23 +56,40 @@ export function renderVideos(): string {
           </div>
         </div>
 
-        <div class="video-placeholder">
+        <div class="latest-videos">
           <h2>🎬 Latest Videos</h2>
-          <div class="placeholder-message">
-            <p>
-              We're just getting started on our journey! Our first videos are coming soon.
-              In the meantime, follow us on social media to see behind-the-scenes content
-              and updates as we prepare to hit the road.
-            </p>
-            <div class="placeholder-actions">
+          ${videos.length > 0 ? `
+            <div class="video-grid">
+              ${videos.map(video => `
+                <a href="${video.link}" target="_blank" rel="noopener" class="video-card">
+                  <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+                  <h3>${video.title}</h3>
+                  <p>${formatDate(video.published)}</p>
+                </a>
+              `).join("")}
+            </div>
+            <div class="videos-footer">
               <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener" class="btn btn-primary">
-                Subscribe on YouTube
-              </a>
-              <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener" class="btn btn-secondary">
-                Follow on Instagram
+                View All on YouTube
               </a>
             </div>
-          </div>
+          ` : `
+            <div class="placeholder-message">
+              <p>
+                We're just getting started on our journey! Our first videos are coming soon.
+                In the meantime, follow us on social media to see behind-the-scenes content
+                and updates as we prepare to hit the road.
+              </p>
+              <div class="placeholder-actions">
+                <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener" class="btn btn-primary">
+                  Subscribe on YouTube
+                </a>
+                <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener" class="btn btn-secondary">
+                  Follow on Instagram
+                </a>
+              </div>
+            </div>
+          `}
         </div>
 
         <div class="videos-cta">
@@ -84,5 +107,26 @@ export function renderVideos(): string {
     title: "Videos",
     content,
     activeNav: "videos",
+  });
+}
+
+/**
+ * Format date for display
+ */
+function formatDate(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 }
