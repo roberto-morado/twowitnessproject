@@ -168,6 +168,18 @@ main {
   outline-offset: 2px;
 }
 
+.btn:disabled,
+.btn-loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover,
+.btn-loading:hover {
+  background: #fff;
+  color: #000;
+}
+
 /* Grid Layouts */
 .content-grid {
   display: block;

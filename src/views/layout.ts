@@ -136,6 +136,9 @@ export function renderLayout(data: LayoutData): string {
       </div>
     </div>
   </footer>
+
+  <!-- Form Loading States -->
+  <script src="/js/forms.js"></script>
 </body>
 </html>`;
 }
