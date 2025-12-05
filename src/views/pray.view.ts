@@ -5,14 +5,16 @@
 
 import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
+import { CsrfService } from "../services/csrf.service.ts";
 
 export interface PrayViewData {
   success?: boolean;
   error?: string;
+  csrfToken?: string;
 }
 
 export function renderPray(data: PrayViewData = {}): string {
-  const { success, error } = data;
+  const { success, error, csrfToken } = data;
 
   const content = `
     <section class="page-header">
@@ -41,6 +43,14 @@ export function renderPray(data: PrayViewData = {}): string {
 
         ${!success ? `
           <form method="POST" action="/pray" style="max-width: 600px;">
+            ${csrfToken ? CsrfService.generateTokenInput(csrfToken) : ""}
+
+            <!-- Honeypot field for spam protection (hidden from users, visible to bots) -->
+            <div style="position: absolute; left: -5000px;" aria-hidden="true">
+              <label for="website">Website:</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
             <div style="margin-bottom: 20px;">
               <label for="name" style="display: block; font-weight: bold; margin-bottom: 5px;">
                 Your Name (optional):

@@ -6,6 +6,8 @@
 import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "@core/response.ts";
 import { AuthService } from "../services/auth.service.ts";
+import { RateLimitService } from "../services/ratelimit.service.ts";
+import { CsrfService } from "../services/csrf.service.ts";
 import { renderLogin } from "../views/admin/login.view.ts";
 import { renderDashboard } from "../views/admin/dashboard.view.ts";
 
@@ -51,8 +53,18 @@ export class AuthController implements Controller {
       }
     }
 
-    const html = renderLogin();
-    return ResponseFactory.html(html);
+    // Generate CSRF token for the form
+    const csrfToken = CsrfService.generateToken();
+    const html = renderLogin({ csrfToken });
+
+    // Return HTML with CSRF cookie
+    return new Response(html, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+      },
+    });
   }
 
   /**
@@ -61,20 +73,82 @@ export class AuthController implements Controller {
   private async handleLogin(request: Request): Promise<Response> {
     try {
       const formData = await request.formData();
+
+      // Validate CSRF token first
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        const csrfToken = CsrfService.generateToken();
+        const html = renderLogin({
+          error: "Invalid security token. Please try again.",
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 403,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
+      }
+
+      // Get IP address for rate limiting and logging
+      const ip = RateLimitService.getIpFromRequest(request);
+
+      // Check rate limit
+      const rateLimitResult = await RateLimitService.checkAndRecord(ip, "login", "login");
+      if (!rateLimitResult.allowed) {
+        const info = RateLimitService.getRateLimitInfo("login");
+        const retryMessage = rateLimitResult.retryAfter
+          ? ` Please try again in ${rateLimitResult.retryAfter} seconds.`
+          : "";
+        const csrfToken = CsrfService.generateToken();
+        const html = renderLogin({
+          error: `Too many login attempts. Maximum ${info.maxAttempts} attempts per ${info.windowMinutes} minutes.${retryMessage}`,
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 429,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
+      }
+
       const username = formData.get("username")?.toString();
       const password = formData.get("password")?.toString();
 
       if (!username || !password) {
-        const html = renderLogin({ error: "Username and password are required" });
-        return ResponseFactory.html(html, { status: 400 });
+        const csrfToken = CsrfService.generateToken();
+        const html = renderLogin({
+          error: "Username and password are required",
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 400,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
       }
 
-      // Attempt login
-      const sessionId = await AuthService.login(username, password);
+      // Attempt login with IP for logging
+      const sessionId = await AuthService.login(username, password, ip);
 
       if (!sessionId) {
-        const html = renderLogin({ error: "Invalid username or password" });
-        return ResponseFactory.html(html, { status: 401 });
+        const csrfToken = CsrfService.generateToken();
+        const html = renderLogin({
+          error: "Invalid username or password",
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 401,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
       }
 
       // Login successful, set cookie and redirect
@@ -87,8 +161,18 @@ export class AuthController implements Controller {
       });
     } catch (error) {
       console.error("Login error:", error);
-      const html = renderLogin({ error: "An error occurred during login" });
-      return ResponseFactory.html(html, { status: 500 });
+      const csrfToken = CsrfService.generateToken();
+      const html = renderLogin({
+        error: "An error occurred during login",
+        csrfToken,
+      });
+      return new Response(html, {
+        status: 500,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+        },
+      });
     }
   }
 

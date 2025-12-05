@@ -4,8 +4,14 @@
 
 import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
+import type { Testimonial } from "../services/testimonial.service.ts";
 
-export function renderHome(): string {
+export interface HomeViewData {
+  testimonials?: Testimonial[];
+}
+
+export function renderHome(data: HomeViewData = {}): string {
+  const { testimonials = [] } = data;
   const content = `
     <section class="hero">
       <div class="container">
@@ -64,6 +70,33 @@ export function renderHome(): string {
       </div>
     </section>
 
+    ${testimonials.length > 0 ? `
+    <section class="testimonials-preview">
+      <div class="container">
+        <h2>✨ Stories of Faith</h2>
+        <p>Hear from those who have encountered God's love through our ministry</p>
+
+        <div style="display: grid; gap: 30px; margin-top: 40px;">
+          ${testimonials.slice(0, 3).map(testimonial => `
+            <div style="padding: 30px; border: 2px solid #000; background: #f9f9f9;">
+              <div style="margin-bottom: 15px;">
+                <strong style="font-size: 1.2em;">${escapeHtml(testimonial.name)}</strong>
+                ${testimonial.location ? `<span style="color: #666; font-size: 0.9em;"> • ${escapeHtml(testimonial.location)}</span>` : ""}
+              </div>
+              <p style="font-style: italic; line-height: 1.8; white-space: pre-wrap;">
+                "${escapeHtml(testimonial.testimony.substring(0, 300))}${testimonial.testimony.length > 300 ? '...' : ''}"
+              </p>
+            </div>
+          `).join("")}
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+          <a href="/testimonials" class="btn btn-primary">Read More Testimonials</a>
+        </div>
+      </div>
+    </section>
+    ` : ""}
+
     <section class="cta">
       <div class="container">
         <h2>Join Us on This Journey</h2>
@@ -100,4 +133,15 @@ export function renderHome(): string {
       ],
     },
   });
+}
+
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
 }

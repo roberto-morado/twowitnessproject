@@ -4,13 +4,15 @@
  */
 
 import { AppConfig } from "@config/app.config.ts";
+import { CsrfService } from "../services/csrf.service.ts";
 
 export interface LoginViewData {
   error?: string;
+  csrfToken?: string;
 }
 
 export function renderLogin(data: LoginViewData = {}): string {
-  const { error } = data;
+  const { error, csrfToken } = data;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -30,6 +32,8 @@ export function renderLogin(data: LoginViewData = {}): string {
         ${error ? `<p style="color: #000; border: 2px solid #000; padding: 10px; margin: 20px 0;"><strong>Error:</strong> ${error}</p>` : ""}
 
         <form method="POST" action="/login" style="max-width: 400px; margin-top: 40px;">
+          ${csrfToken ? CsrfService.generateTokenInput(csrfToken) : ""}
+
           <div style="margin-bottom: 20px;">
             <label for="username" style="display: block; font-weight: bold; margin-bottom: 5px;">Username:</label>
             <input

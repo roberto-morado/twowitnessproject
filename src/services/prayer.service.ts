@@ -4,6 +4,7 @@
  */
 
 import { db, KvKeys } from "./db.service.ts";
+import { DiscordService } from "./discord.service.ts";
 
 export interface PrayerRequest {
   id: string;
@@ -48,6 +49,25 @@ export class PrayerService {
     };
 
     await db.set(KvKeys.prayer(id), prayer);
+
+    // Send Discord notifications (async, don't wait)
+    DiscordService.notifyAdminNewPrayer({
+      id: prayer.id,
+      name: prayer.name || undefined,
+      email: prayer.email || undefined,
+      prayer: prayer.prayer,
+      isPublic: prayer.isPublic,
+    }).catch(err => console.error("Discord admin notification failed:", err));
+
+    // If public, also notify community webhook
+    if (prayer.isPublic) {
+      DiscordService.notifyCommunityNewPrayer({
+        id: prayer.id,
+        name: prayer.name || undefined,
+        prayer: prayer.prayer,
+      }).catch(err => console.error("Discord community notification failed:", err));
+    }
+
     return id;
   }
 

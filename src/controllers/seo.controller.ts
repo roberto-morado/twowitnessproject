@@ -67,6 +67,12 @@ export class SEOController implements Controller {
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>${baseUrl}/testimonials</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>${baseUrl}/privacy</loc>
     <lastmod>${now}</lastmod>
     <changefreq>yearly</changefreq>

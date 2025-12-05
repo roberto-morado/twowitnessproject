@@ -92,6 +92,7 @@ export function renderLayout(data: LayoutData): string {
           <li><a href="/" class="${activeNav === "home" ? "active" : ""}">Home</a></li>
           <li><a href="/about" class="${activeNav === "about" ? "active" : ""}">About</a></li>
           <li><a href="/videos" class="${activeNav === "videos" ? "active" : ""}">Videos</a></li>
+          <li><a href="/testimonials" class="${activeNav === "testimonials" ? "active" : ""}">Testimonials</a></li>
           <li><a href="/donate" class="${activeNav === "donate" ? "active" : ""}">Donate</a></li>
         </ul>
       </div>

@@ -6,6 +6,8 @@
 import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "@core/response.ts";
 import { AuthService } from "../services/auth.service.ts";
+import { RateLimitService } from "../services/ratelimit.service.ts";
+import { CsrfService } from "../services/csrf.service.ts";
 import { PrayerService, type PrayerSubmission } from "../services/prayer.service.ts";
 import { renderPray } from "../views/pray.view.ts";
 import { renderPrayers } from "../views/prayers.view.ts";
@@ -51,8 +53,18 @@ export class PrayerController implements Controller {
    * GET /pray - Show prayer submission form
    */
   private showPrayForm(): Response {
-    const html = renderPray();
-    return ResponseFactory.html(html);
+    // Generate CSRF token for the form
+    const csrfToken = CsrfService.generateToken();
+    const html = renderPray({ csrfToken });
+
+    // Return HTML with CSRF cookie
+    return new Response(html, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+      },
+    });
   }
 
   /**
@@ -61,14 +73,82 @@ export class PrayerController implements Controller {
   private async submitPrayer(request: Request): Promise<Response> {
     try {
       const formData = await request.formData();
+
+      // Validate CSRF token first
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        const csrfToken = CsrfService.generateToken();
+        const html = renderPray({
+          error: "Invalid security token. Please try again.",
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 403,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
+      }
+
+      // Get IP address for rate limiting
+      const ip = RateLimitService.getIpFromRequest(request);
+
+      // Check rate limit
+      const rateLimitResult = await RateLimitService.checkAndRecord(ip, "pray", "prayer");
+      if (!rateLimitResult.allowed) {
+        const info = RateLimitService.getRateLimitInfo("prayer");
+        const retryMessage = rateLimitResult.retryAfter
+          ? ` Please try again in ${rateLimitResult.retryAfter} seconds.`
+          : "";
+        const csrfToken = CsrfService.generateToken();
+        const html = renderPray({
+          error: `Too many prayer submissions. Maximum ${info.maxAttempts} submissions per ${info.windowMinutes} minutes.${retryMessage}`,
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 429,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
+      }
+
+      // Honeypot spam protection - if "website" field is filled, it's a bot
+      const honeypot = formData.get("website")?.toString();
+      if (honeypot) {
+        // Silently reject spam (don't tell the bot it failed)
+        console.log("Honeypot triggered - potential spam blocked");
+        const csrfToken = CsrfService.generateToken();
+        const html = renderPray({ success: true, csrfToken });
+        return new Response(html, {
+          status: 200,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
+      }
+
       const name = formData.get("name")?.toString();
       const email = formData.get("email")?.toString();
       const prayer = formData.get("prayer")?.toString();
       const isPublic = formData.get("isPublic") === "true";
 
       if (!prayer || prayer.trim().length === 0) {
-        const html = renderPray({ error: "Prayer text is required" });
-        return ResponseFactory.html(html, { status: 400 });
+        const csrfToken = CsrfService.generateToken();
+        const html = renderPray({
+          error: "Prayer text is required",
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 400,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
       }
 
       const submission: PrayerSubmission = {
@@ -80,12 +160,29 @@ export class PrayerController implements Controller {
 
       await PrayerService.submitPrayer(submission);
 
-      const html = renderPray({ success: true });
-      return ResponseFactory.html(html);
+      const csrfToken = CsrfService.generateToken();
+      const html = renderPray({ success: true, csrfToken });
+      return new Response(html, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+        },
+      });
     } catch (error) {
       console.error("Prayer submission error:", error);
-      const html = renderPray({ error: "An error occurred while submitting your prayer" });
-      return ResponseFactory.html(html, { status: 500 });
+      const csrfToken = CsrfService.generateToken();
+      const html = renderPray({
+        error: "An error occurred while submitting your prayer",
+        csrfToken,
+      });
+      return new Response(html, {
+        status: 500,
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+        },
+      });
     }
   }
 
