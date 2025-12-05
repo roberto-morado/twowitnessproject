@@ -6,15 +6,17 @@
 import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
 import { CsrfService } from "../services/csrf.service.ts";
+import type { NotificationOptions } from "./components/notification.ts";
 
 export interface PrayViewData {
   success?: boolean;
   error?: string;
   csrfToken?: string;
+  notification?: NotificationOptions;
 }
 
 export function renderPray(data: PrayViewData = {}): string {
-  const { success, error, csrfToken } = data;
+  const { success, error, csrfToken, notification } = data;
 
   const content = `
     <section class="page-header">
@@ -123,5 +125,6 @@ export function renderPray(data: PrayViewData = {}): string {
     title: "Submit Prayer Request",
     content,
     activeNav: "",
+    notification,
   });
 }
