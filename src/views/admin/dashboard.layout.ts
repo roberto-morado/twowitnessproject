@@ -8,7 +8,7 @@ import { AppConfig } from "@config/app.config.ts";
 export interface DashboardLayoutData {
   title: string;
   content: string;
-  activeTab?: "prayers" | "analytics" | "testimonials" | "settings";
+  activeTab?: "prayers" | "analytics" | "testimonials" | "security" | "settings";
   username: string;
 }
 
@@ -63,6 +63,14 @@ export function renderDashboardLayout(data: DashboardLayoutData): string {
             style="font-weight: bold; ${activeTab === "testimonials" ? "text-decoration: underline;" : "text-decoration: none;"}"
           >
             ✨ Testimonials
+          </a>
+        </li>
+        <li>
+          <a
+            href="/dashboard/login-attempts"
+            style="font-weight: bold; ${activeTab === "security" ? "text-decoration: underline;" : "text-decoration: none;"}"
+          >
+            🔒 Security
           </a>
         </li>
         <li>

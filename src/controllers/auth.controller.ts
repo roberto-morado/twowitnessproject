@@ -10,6 +10,7 @@ import { RateLimitService } from "../services/ratelimit.service.ts";
 import { CsrfService } from "../services/csrf.service.ts";
 import { renderLogin } from "../views/admin/login.view.ts";
 import { renderDashboard } from "../views/admin/dashboard.view.ts";
+import { renderLoginAttempts } from "../views/admin/login-attempts.view.ts";
 
 export class AuthController implements Controller {
   getRoutes(): Route[] {
@@ -28,6 +29,11 @@ export class AuthController implements Controller {
         method: "GET",
         pattern: "/dashboard",
         handler: this.showDashboard.bind(this),
+      },
+      {
+        method: "GET",
+        pattern: "/dashboard/login-attempts",
+        handler: this.showLoginAttempts.bind(this),
       },
       {
         method: "POST",
@@ -196,6 +202,31 @@ export class AuthController implements Controller {
 
     // Redirect to prayers dashboard (default tab)
     return ResponseFactory.redirect("/dashboard/prayers");
+  }
+
+  /**
+   * GET /dashboard/login-attempts - Show recent login attempts (requires auth)
+   */
+  private async showLoginAttempts(request: Request): Promise<Response> {
+    // Check authentication
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+
+    if (!username) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    // Fetch recent login attempts (last 100)
+    const attempts = await AuthService.getRecentLoginAttempts(100);
+
+    const html = renderLoginAttempts({ attempts, username });
+    return ResponseFactory.html(html);
   }
 
   /**
