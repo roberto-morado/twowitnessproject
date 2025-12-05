@@ -4,6 +4,10 @@
  */
 
 import { db, KvKeys } from "./db.service.ts";
+import { scrypt, randomBytes, timingSafeEqual } from "node:crypto";
+import { promisify } from "node:util";
+
+const scryptAsync = promisify(scrypt);
 
 export interface AdminUser {
   username: string;
@@ -18,27 +22,55 @@ export interface Session {
   expiresAt: number;
 }
 
+export interface LoginAttempt {
+  username: string;
+  success: boolean;
+  timestamp: number;
+  ip: string;
+}
+
 export class AuthService {
   private static SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+  private static SCRYPT_KEY_LENGTH = 32; // 256 bits
+  private static SCRYPT_COST = 16384; // CPU/memory cost (2^14)
 
   /**
-   * Hash password using Web Crypto API
+   * Hash password using scrypt (secure, slow hashing for passwords)
+   * Format: salt:hash (both hex-encoded)
    */
   private static async hashPassword(password: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-    return hashHex;
+    const salt = randomBytes(16); // 128-bit salt
+    const derivedKey = await scryptAsync(
+      password,
+      salt,
+      this.SCRYPT_KEY_LENGTH,
+      { N: this.SCRYPT_COST }
+    ) as Buffer;
+
+    // Return salt:hash format for storage
+    return `${salt.toString("hex")}:${derivedKey.toString("hex")}`;
   }
 
   /**
-   * Verify password against hash
+   * Verify password against scrypt hash
+   * Uses timing-safe comparison to prevent timing attacks
    */
-  private static async verifyPassword(password: string, hash: string): Promise<boolean> {
-    const passwordHash = await this.hashPassword(password);
-    return passwordHash === hash;
+  private static async verifyPassword(password: string, storedHash: string): Promise<boolean> {
+    const [saltHex, hashHex] = storedHash.split(":");
+    if (!saltHex || !hashHex) return false;
+
+    const salt = Buffer.from(saltHex, "hex");
+    const storedKeyBuffer = Buffer.from(hashHex, "hex");
+
+    const derivedKey = await scryptAsync(
+      password,
+      salt,
+      this.SCRYPT_KEY_LENGTH,
+      { N: this.SCRYPT_COST }
+    ) as Buffer;
+
+    // Timing-safe comparison prevents timing attacks
+    return timingSafeEqual(derivedKey, storedKeyBuffer);
   }
 
   /**
@@ -85,30 +117,67 @@ export class AuthService {
    * Authenticate user with username and password
    * Returns session ID if successful, null otherwise
    */
-  static async login(username: string, password: string): Promise<string | null> {
-    // Get admin user
-    const admin = await db.get<AdminUser>(KvKeys.adminUser(username));
-    if (!admin) {
+  static async login(username: string, password: string, ip = "unknown"): Promise<string | null> {
+    try {
+      // Get admin user
+      const admin = await db.get<AdminUser>(KvKeys.adminUser(username));
+      if (!admin) {
+        await this.logLoginAttempt(username, false, ip);
+        return null;
+      }
+
+      // Verify password
+      const isValid = await this.verifyPassword(password, admin.passwordHash);
+      if (!isValid) {
+        await this.logLoginAttempt(username, false, ip);
+        return null;
+      }
+
+      // Create session
+      const sessionId = this.generateSessionId();
+      const session: Session = {
+        id: sessionId,
+        username,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + this.SESSION_DURATION,
+      };
+
+      await db.set(KvKeys.session(sessionId), session);
+      await this.logLoginAttempt(username, true, ip);
+      return sessionId;
+    } catch (error) {
+      console.error("Login error:", error);
+      await this.logLoginAttempt(username, false, ip);
       return null;
     }
+  }
 
-    // Verify password
-    const isValid = await this.verifyPassword(password, admin.passwordHash);
-    if (!isValid) {
-      return null;
-    }
+  /**
+   * Log login attempt for security monitoring
+   */
+  private static async logLoginAttempt(username: string, success: boolean, ip: string): Promise<void> {
+    const timestamp = Date.now();
+    const id = crypto.randomUUID();
 
-    // Create session
-    const sessionId = this.generateSessionId();
-    const session: Session = {
-      id: sessionId,
+    const attempt: LoginAttempt = {
       username,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + this.SESSION_DURATION,
+      success,
+      timestamp,
+      ip,
     };
 
-    await db.set(KvKeys.session(sessionId), session);
-    return sessionId;
+    await db.set(KvKeys.loginAttempt(timestamp, id), attempt);
+  }
+
+  /**
+   * Get recent login attempts for monitoring
+   */
+  static async getRecentLoginAttempts(limit = 50): Promise<LoginAttempt[]> {
+    const attempts = await db.list<LoginAttempt>(KvKeys.allLoginAttempts());
+    return attempts
+      .map(entry => entry.value)
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, limit);
   }
 
   /**

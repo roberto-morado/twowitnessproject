@@ -120,11 +120,30 @@ export const KvKeys = {
   // Analytics events: ["analytics", "events", timestamp, id]
   event: (timestamp: number, id: string) => ["analytics", "events", timestamp, id],
 
+  // Login attempts: ["security", "loginAttempts", timestamp, id]
+  loginAttempt: (timestamp: number, id: string) => ["security", "loginAttempts", timestamp, id],
+
+  // Rate limiting: ["rateLimit", identifier, timestamp]
+  rateLimit: (identifier: string, timestamp: number) => ["rateLimit", identifier, timestamp],
+
+  // Settings: ["settings", key]
+  setting: (key: string) => ["settings", key],
+
+  // Testimonials: ["testimonials", testimonialId]
+  testimonial: (testimonialId: string) => ["testimonials", testimonialId],
+
+  // Testimonial keys: ["testimonial", "keys", keyId]
+  testimonialKey: (keyId: string) => ["testimonial", "keys", keyId],
+
   // Prefixes for listing
   allPrayers: () => ["prayers"],
   allPageViews: () => ["analytics", "pageviews"],
   allEvents: () => ["analytics", "events"],
   allSessions: () => ["sessions"],
+  allLoginAttempts: () => ["security", "loginAttempts"],
+  allTestimonials: () => ["testimonials"],
+  allTestimonialKeys: () => ["testimonial", "keys"],
+  allRateLimits: (identifier: string) => ["rateLimit", identifier],
 };
 
 // Export singleton instance
