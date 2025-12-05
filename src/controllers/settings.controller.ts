@@ -154,12 +154,12 @@ export class SettingsController implements Controller {
       // Validate CSRF token
       const csrfValid = await CsrfService.validateFromRequest(request, formData);
       if (!csrfValid) {
-        return ResponseFactory.json({ success: false, error: "Invalid security token" }, 403);
+        return ResponseFactory.json({ success: false, error: "Invalid security token" }, { status: 403 });
       }
 
       const type = formData.get("type")?.toString() as "admin" | "community";
       if (!type || (type !== "admin" && type !== "community")) {
-        return ResponseFactory.json({ success: false, error: "Invalid webhook type" }, 400);
+        return ResponseFactory.json({ success: false, error: "Invalid webhook type" }, { status: 400 });
       }
 
       const success = await DiscordService.testWebhook(type);
@@ -172,7 +172,7 @@ export class SettingsController implements Controller {
       });
     } catch (error) {
       console.error("Test webhook error:", error);
-      return ResponseFactory.json({ success: false, error: "An error occurred" }, 500);
+      return ResponseFactory.json({ success: false, error: "An error occurred" }, { status: 500 });
     }
   }
 }
