@@ -1,20 +1,10 @@
 /**
  * Authentication Service
- * Handles password hashing, session management, and admin operations
+ * Handles session management and admin authentication
+ * Admin credentials are read directly from environment variables (no database storage)
  */
 
 import { db, KvKeys } from "./db.service.ts";
-import { scrypt, randomBytes, timingSafeEqual } from "node:crypto";
-import { Buffer } from "node:buffer";
-import { promisify } from "node:util";
-
-const scryptAsync = promisify(scrypt);
-
-export interface AdminUser {
-  username: string;
-  passwordHash: string;
-  createdAt: number;
-}
 
 export interface Session {
   id: string;
@@ -32,45 +22,6 @@ export interface LoginAttempt {
 
 export class AuthService {
   private static SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-  private static SCRYPT_KEY_LENGTH = 32; // 256 bits
-  private static SCRYPT_COST = 16384; // CPU/memory cost (2^14)
-
-  /**
-   * Hash password using scrypt (secure, slow hashing for passwords)
-   * Format: salt:hash (both hex-encoded)
-   */
-  private static async hashPassword(password: string): Promise<string> {
-    const salt = randomBytes(16); // 128-bit salt
-    const derivedKey = await scryptAsync(
-      password,
-      salt,
-      this.SCRYPT_KEY_LENGTH
-    ) as Buffer;
-
-    // Return salt:hash format for storage
-    return `${salt.toString("hex")}:${derivedKey.toString("hex")}`;
-  }
-
-  /**
-   * Verify password against scrypt hash
-   * Uses timing-safe comparison to prevent timing attacks
-   */
-  private static async verifyPassword(password: string, storedHash: string): Promise<boolean> {
-    const [saltHex, hashHex] = storedHash.split(":");
-    if (!saltHex || !hashHex) return false;
-
-    const salt = Buffer.from(saltHex, "hex");
-    const storedKeyBuffer = Buffer.from(hashHex, "hex");
-
-    const derivedKey = await scryptAsync(
-      password,
-      salt,
-      this.SCRYPT_KEY_LENGTH
-    ) as Buffer;
-
-    // Timing-safe comparison prevents timing attacks
-    return timingSafeEqual(derivedKey, storedKeyBuffer);
-  }
 
   /**
    * Generate random session ID
@@ -80,59 +31,36 @@ export class AuthService {
   }
 
   /**
-   * Initialize admin user from environment variables
-   * Returns true if admin was created, false if already exists
-   */
-  static async initializeAdmin(): Promise<boolean> {
-    const username = Deno.env.get("ADMIN_USER");
-    const password = Deno.env.get("ADMIN_PASS");
-
-    if (!username || !password) {
-      console.warn("⚠ ADMIN_USER or ADMIN_PASS not set in environment variables");
-      return false;
-    }
-
-    // Check if admin already exists
-    const existingAdmin = await db.get<AdminUser>(KvKeys.adminUser(username));
-    if (existingAdmin) {
-      console.log("✓ Admin user already exists");
-      return false;
-    }
-
-    // Create admin user
-    const passwordHash = await this.hashPassword(password);
-    const admin: AdminUser = {
-      username,
-      passwordHash,
-      createdAt: Date.now(),
-    };
-
-    await db.set(KvKeys.adminUser(username), admin);
-    console.log(`✓ Created admin user: ${username}`);
-    return true;
-  }
-
-  /**
    * Authenticate user with username and password
+   * Checks directly against environment variables (ADMIN_USER and ADMIN_PASS)
    * Returns session ID if successful, null otherwise
    */
   static async login(username: string, password: string, ip = "unknown"): Promise<string | null> {
     try {
-      // Get admin user
-      const admin = await db.get<AdminUser>(KvKeys.adminUser(username));
-      if (!admin) {
+      // Get admin credentials from environment variables (source of truth)
+      const adminUsername = Deno.env.get("ADMIN_USER");
+      const adminPassword = Deno.env.get("ADMIN_PASS");
+
+      // Check if admin credentials are configured
+      if (!adminUsername || !adminPassword) {
+        console.error("⚠ Admin credentials not configured in environment variables");
         await this.logLoginAttempt(username, false, ip);
         return null;
       }
 
-      // Verify password
-      const isValid = await this.verifyPassword(password, admin.passwordHash);
-      if (!isValid) {
+      // Check username
+      if (username !== adminUsername) {
         await this.logLoginAttempt(username, false, ip);
         return null;
       }
 
-      // Create session
+      // Check password
+      if (password !== adminPassword) {
+        await this.logLoginAttempt(username, false, ip);
+        return null;
+      }
+
+      // Authentication successful - create session
       const sessionId = this.generateSessionId();
       const session: Session = {
         id: sessionId,

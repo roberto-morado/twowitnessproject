@@ -49,8 +49,8 @@ async function bootstrap(): Promise<Router> {
   // Initialize Deno KV connection
   await db.connect();
 
-  // Initialize admin user from environment variables
-  await AuthService.initializeAdmin();
+  // Admin authentication uses env vars directly (ADMIN_USER and ADMIN_PASS)
+  // No database initialization needed - credentials are checked at login time
 
   const router = new Router();
 
