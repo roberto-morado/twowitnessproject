@@ -4,6 +4,7 @@
  */
 
 import { AppConfig } from "@config/app.config.ts";
+import { escapeHtml } from "@utils/html.ts";
 import { renderLayout } from "./layout.ts";
 import type { Testimonial } from "../services/testimonial.service.ts";
 
@@ -87,13 +88,4 @@ export function renderTestimonials(data: TestimonialsViewData): string {
   });
 }
 
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, m => map[m]);
-}
+

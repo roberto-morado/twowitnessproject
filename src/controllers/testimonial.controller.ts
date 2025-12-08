@@ -12,6 +12,7 @@ import { TestimonialService, type TestimonialSubmission } from "../services/test
 import { renderTestimonials } from "../views/testimonials.view.ts";
 import { renderTestimonialSubmit } from "../views/testimonial-submit.view.ts";
 import { renderAdminTestimonials } from "../views/admin/testimonials.view.ts";
+import { validateTestimonialSubmission, sanitizeString } from "@utils/validation.ts";
 
 export class TestimonialController implements Controller {
   getRoutes(): Route[] {
@@ -170,10 +171,33 @@ export class TestimonialController implements Controller {
       const testimony = formData.get("testimony")?.toString();
       const location = formData.get("location")?.toString();
 
-      if (!keyId || !name || !testimony) {
+      // Validate key ID
+      if (!keyId) {
         const csrfToken = CsrfService.generateToken();
         const html = renderTestimonialSubmit({
-          error: "Name and testimony are required",
+          error: "Invalid submission key",
+          csrfToken,
+        });
+        return new Response(html, {
+          status: 400,
+          headers: {
+            "Content-Type": "text/html; charset=utf-8",
+            "Set-Cookie": CsrfService.createTokenCookie(csrfToken),
+          },
+        });
+      }
+
+      // Validate input using centralized validation
+      const validationResult = validateTestimonialSubmission({
+        name: name || "",
+        testimony: testimony || "",
+        location: location || undefined,
+      });
+
+      if (!validationResult.valid) {
+        const csrfToken = CsrfService.generateToken();
+        const html = renderTestimonialSubmit({
+          error: validationResult.error,
           keyId,
           csrfToken,
         });
@@ -186,11 +210,12 @@ export class TestimonialController implements Controller {
         });
       }
 
+      // Sanitize inputs to remove control characters
       const submission: TestimonialSubmission = {
         keyId,
-        name,
-        testimony,
-        location,
+        name: sanitizeString(name!),
+        testimony: sanitizeString(testimony!),
+        location: location ? sanitizeString(location) : undefined,
       };
 
       const testimonialId = await TestimonialService.submitTestimonial(submission);

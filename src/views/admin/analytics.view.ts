@@ -4,6 +4,7 @@
  */
 
 import { renderDashboardLayout } from "./dashboard.layout.ts";
+import { escapeHtml } from "@utils/html.ts";
 import type { AnalyticsOverview } from "../../services/analytics.service.ts";
 
 export interface AnalyticsViewData {
@@ -211,15 +212,3 @@ function renderHorizontalBarChart(data: Record<string, number>, total: number): 
 }
 
 /**
- * Escape HTML
- */
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (char) => map[char]);
-}

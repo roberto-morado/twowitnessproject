@@ -4,6 +4,7 @@
  */
 
 import { renderDashboardLayout } from "./dashboard.layout.ts";
+import { escapeHtml } from "@utils/html.ts";
 import type { PrayerRequest } from "../../services/prayer.service.ts";
 import { PrayerService } from "../../services/prayer.service.ts";
 
@@ -114,15 +115,3 @@ export function renderAdminPrayers(data: AdminPrayersViewData): string {
 }
 
 /**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (char) => map[char]);
-}

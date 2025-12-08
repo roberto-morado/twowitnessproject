@@ -19,6 +19,7 @@
 
 import { Router } from "./src/core/router.ts";
 import { AppConfig } from "./src/config/app.config.ts";
+import { validateEnvironment } from "./src/config/env.ts";
 import { db } from "./src/services/db.service.ts";
 import { AuthService } from "./src/services/auth.service.ts";
 import { CleanupService } from "./src/services/cleanup.service.ts";
@@ -95,6 +96,9 @@ function setupCronJobs() {
  * Main server function
  */
 async function main() {
+  // Validate environment variables before starting
+  validateEnvironment();
+
   const router = await bootstrap();
 
   console.log(`

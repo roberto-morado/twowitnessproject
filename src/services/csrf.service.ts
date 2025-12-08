@@ -9,6 +9,7 @@
  */
 
 import { db, KvKeys } from "./db.service.ts";
+import { timingSafeEqual } from "@utils/crypto.ts";
 
 export interface CsrfToken {
   token: string;
@@ -30,7 +31,8 @@ export class CsrfService {
 
   /**
    * Validate CSRF token using Double Submit Cookie pattern
-   * Compares cookie value with form value
+   * Compares cookie value with form value using timing-safe comparison
+   * to prevent timing attacks
    */
   static validateToken(cookieToken: string | null, formToken: string | null): boolean {
     // Both must be present
@@ -38,8 +40,8 @@ export class CsrfService {
       return false;
     }
 
-    // Both must match (timing-safe comparison)
-    return cookieToken === formToken;
+    // Both must match - use timing-safe comparison to prevent timing attacks
+    return timingSafeEqual(cookieToken, formToken);
   }
 
   /**
