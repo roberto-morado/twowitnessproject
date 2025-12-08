@@ -1,3 +1,4 @@
+/**
  * Admin Prayer Management View
  * Shows all prayers (public and private) with management actions
  */

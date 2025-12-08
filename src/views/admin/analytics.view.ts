@@ -1,3 +1,4 @@
+/**
  * Analytics Dashboard View
  * Shows website statistics with simple visualizations
  */
