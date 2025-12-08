@@ -4,6 +4,7 @@
  */
 
 import { AppConfig } from "@config/app.config.ts";
+import { escapeHtml } from "@utils/html.ts";
 import { renderLayout } from "./layout.ts";
 import { CsrfService } from "../services/csrf.service.ts";
 
@@ -152,13 +153,4 @@ export function renderTestimonialSubmit(data: TestimonialSubmitViewData = {}): s
   });
 }
 
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, m => map[m]);
-}
+

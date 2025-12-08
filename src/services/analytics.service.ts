@@ -43,13 +43,18 @@ export class AnalyticsService {
 
   /**
    * Anonymize IP address by hashing
+   * Uses ANALYTICS_SALT environment variable or generates a random salt
    */
   private static async anonymizeIp(ip: string | null): Promise<string> {
     if (!ip) return "unknown";
 
+    // Get salt from environment or use a consistent fallback
+    // Note: If ANALYTICS_SALT is not set, salt will change on restart
+    const salt = Deno.env.get("ANALYTICS_SALT") || crypto.randomUUID();
+
     // Hash the IP for privacy
     const encoder = new TextEncoder();
-    const data = encoder.encode(ip + "salt-twp"); // Add salt for extra privacy
+    const data = encoder.encode(ip + salt);
     try {
       const buffer = await crypto.subtle.digest("SHA-256", data);
       const hashArray = Array.from(new Uint8Array(buffer));

@@ -4,6 +4,7 @@
  */
 
 import { renderDashboardLayout } from "./dashboard.layout.ts";
+import { escapeHtml } from "@utils/html.ts";
 import type { LoginAttempt } from "../../services/auth.service.ts";
 
 export interface LoginAttemptsViewData {
@@ -115,13 +116,4 @@ function formatTimeAgo(timestamp: number): string {
   return `${Math.floor(seconds / 86400)}d ago`;
 }
 
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, m => map[m]);
-}
+

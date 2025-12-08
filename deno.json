@@ -9,7 +9,8 @@
     "@controllers/": "./src/controllers/",
     "@views/": "./src/views/",
     "@services/": "./src/services/",
-    "@config/": "./src/config/"
+    "@config/": "./src/config/",
+    "@utils/": "./src/utils/"
   },
   "compilerOptions": {
     "strict": true,

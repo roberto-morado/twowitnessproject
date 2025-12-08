@@ -5,6 +5,7 @@
 import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
 import type { Testimonial } from "../services/testimonial.service.ts";
+import { escapeHtml } from "@utils/html.ts";
 
 export interface HomeViewData {
   testimonials?: Testimonial[];

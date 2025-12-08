@@ -7,6 +7,7 @@ import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
 import type { PrayerRequest } from "../services/prayer.service.ts";
 import { PrayerService } from "../services/prayer.service.ts";
+import { escapeHtml } from "@utils/html.ts";
 
 export interface PrayersViewData {
   prayers: PrayerRequest[];
@@ -88,16 +89,3 @@ export function renderPrayers(data: PrayersViewData): string {
   });
 }
 
-/**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (char) => map[char]);
-}

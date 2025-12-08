@@ -14,6 +14,7 @@ import { renderPrayers } from "../views/prayers.view.ts";
 import { renderAdminPrayers } from "../views/admin/prayers.view.ts";
 import { createNotificationRedirect } from "../utils/redirect.ts";
 import { getNotificationFromUrl } from "../views/components/notification.ts";
+import { validatePrayerSubmission, sanitizeString } from "@utils/validation.ts";
 
 export class PrayerController implements Controller {
   getRoutes(): Route[] {
@@ -142,10 +143,17 @@ export class PrayerController implements Controller {
       const prayer = formData.get("prayer")?.toString();
       const isPublic = formData.get("isPublic") === "true";
 
-      if (!prayer || prayer.trim().length === 0) {
+      // Validate input using centralized validation
+      const validationResult = validatePrayerSubmission({
+        name: name || undefined,
+        email: email || undefined,
+        prayer: prayer || "",
+      });
+
+      if (!validationResult.valid) {
         const csrfToken = CsrfService.generateToken();
         const html = renderPray({
-          error: "Prayer text is required",
+          error: validationResult.error,
           csrfToken,
         });
         return new Response(html, {
@@ -157,10 +165,11 @@ export class PrayerController implements Controller {
         });
       }
 
+      // Sanitize inputs to remove control characters
       const submission: PrayerSubmission = {
-        name,
-        email,
-        prayer,
+        name: name ? sanitizeString(name) : undefined,
+        email: email ? sanitizeString(email) : undefined,
+        prayer: sanitizeString(prayer!),
         isPublic,
       };
 

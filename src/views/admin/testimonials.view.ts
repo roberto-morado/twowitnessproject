@@ -4,6 +4,7 @@
  */
 
 import { renderDashboardLayout } from "./dashboard.layout.ts";
+import { escapeHtml } from "@utils/html.ts";
 import type { Testimonial, TestimonialKey } from "../../services/testimonial.service.ts";
 import { TestimonialService } from "../../services/testimonial.service.ts";
 import { CsrfService } from "../../services/csrf.service.ts";
@@ -246,13 +247,4 @@ export function renderAdminTestimonials(data: AdminTestimonialsViewData): string
   });
 }
 
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, m => map[m]);
-}
+

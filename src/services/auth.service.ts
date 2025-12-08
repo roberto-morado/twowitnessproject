@@ -5,6 +5,7 @@
  */
 
 import { db, KvKeys } from "./db.service.ts";
+import { timingSafeEqual, verifyPassword } from "@utils/crypto.ts";
 
 export interface Session {
   id: string;
@@ -33,6 +34,8 @@ export class AuthService {
   /**
    * Authenticate user with username and password
    * Checks directly against environment variables (ADMIN_USER and ADMIN_PASS)
+   * Supports both plain text passwords (ADMIN_PASS) and hashed passwords (ADMIN_PASS_HASH + ADMIN_PASS_SALT)
+   * Uses timing-safe comparison to prevent timing attacks
    * Returns session ID if successful, null otherwise
    */
   static async login(username: string, password: string, ip = "unknown"): Promise<string | null> {
@@ -40,22 +43,40 @@ export class AuthService {
       // Get admin credentials from environment variables (source of truth)
       const adminUsername = Deno.env.get("ADMIN_USER");
       const adminPassword = Deno.env.get("ADMIN_PASS");
+      const adminPasswordHash = Deno.env.get("ADMIN_PASS_HASH");
+      const adminPasswordSalt = Deno.env.get("ADMIN_PASS_SALT");
 
       // Check if admin credentials are configured
-      if (!adminUsername || !adminPassword) {
-        console.error("⚠ Admin credentials not configured in environment variables");
+      if (!adminUsername) {
+        console.error("⚠ ADMIN_USER not configured in environment variables");
         await this.logLoginAttempt(username, false, ip);
         return null;
       }
 
-      // Check username
-      if (username !== adminUsername) {
+      if (!adminPassword && !adminPasswordHash) {
+        console.error("⚠ ADMIN_PASS or ADMIN_PASS_HASH not configured in environment variables");
         await this.logLoginAttempt(username, false, ip);
         return null;
       }
 
-      // Check password
-      if (password !== adminPassword) {
+      // Check username using timing-safe comparison (prevents timing attacks)
+      if (!timingSafeEqual(username, adminUsername)) {
+        await this.logLoginAttempt(username, false, ip);
+        return null;
+      }
+
+      // Check password using timing-safe comparison
+      let passwordValid = false;
+
+      if (adminPasswordHash && adminPasswordSalt) {
+        // Use hashed password verification (recommended for production)
+        passwordValid = await verifyPassword(password, adminPasswordHash, adminPasswordSalt);
+      } else if (adminPassword) {
+        // Use plain text password comparison with timing-safe comparison
+        passwordValid = timingSafeEqual(password, adminPassword);
+      }
+
+      if (!passwordValid) {
         await this.logLoginAttempt(username, false, ip);
         return null;
       }
