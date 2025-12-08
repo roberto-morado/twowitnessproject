@@ -3,6 +3,8 @@
  * Displays success/error messages with auto-dismiss
  */
 
+import { escapeHtml } from "@utils/html.ts";
+
 export interface NotificationOptions {
   message?: string;
   type?: "success" | "error" | "info" | "warning";
