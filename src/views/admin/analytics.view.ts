@@ -160,6 +160,7 @@ export function renderAnalytics(data: AnalyticsViewData): string {
   });
 }
 
+/**
  * Render simple bar chart (vertical)
  */
 function renderBarChart(data: Array<{ date: string; views: number }>): string {
@@ -184,6 +185,7 @@ function renderBarChart(data: Array<{ date: string; views: number }>): string {
   `;
 }
 
+/**
  * Render horizontal bar chart
  */
 function renderHorizontalBarChart(data: Record<string, number>, total: number): string {
