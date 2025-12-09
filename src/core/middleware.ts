@@ -77,13 +77,13 @@ export const securityHeadersMiddleware: MiddlewareFunction = async (
     const headers = new Headers(response.headers);
 
     // Content Security Policy - Allow Stripe and YouTube thumbnails
+    // Note: No style-src needed (zero CSS approach)
     headers.set(
       "Content-Security-Policy",
       "default-src 'self'; " +
       "script-src 'self' https://js.stripe.com; " +
       "frame-src https://js.stripe.com; " +
       "connect-src 'self' https://api.stripe.com; " +
-      "style-src 'self' 'unsafe-inline'; " +
       "img-src 'self' data: https://i.ytimg.com;"
     );
 
@@ -156,8 +156,8 @@ export const analyticsMiddleware: MiddlewareFunction = async (
 ) => {
   const url = new URL(request.url);
 
-  // Don't track admin routes, login, or static files
-  const skipPaths = ["/login", "/dashboard", "/css/", "/images/"];
+  // Don't track admin routes or login
+  const skipPaths = ["/login", "/dashboard"];
   const shouldTrack = !skipPaths.some(path => url.pathname.startsWith(path));
 
   if (shouldTrack && request.method === "GET") {
@@ -199,25 +199,13 @@ export const analyticsMiddleware: MiddlewareFunction = async (
 
 /**
  * Cache Headers Middleware for static files
- * Adds long-term caching for CSS and images
+ * Note: No longer needed with zero CSS approach (no static files)
+ * Keeping for potential future use (e.g., robots.txt, sitemap.xml)
  */
 export const cacheHeadersMiddleware: MiddlewareFunction = async (
   request,
   context
 ) => {
-  const url = new URL(request.url);
-  const response = await context.next();
-
-  if (response && (url.pathname.startsWith("/css/") || url.pathname.startsWith("/images/"))) {
-    const headers = new Headers(response.headers);
-    headers.set("Cache-Control", "public, max-age=31536000, immutable");
-
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers,
-    });
-  }
-
-  return response;
+  // No static files to cache in zero-CSS approach
+  return await context.next();
 };

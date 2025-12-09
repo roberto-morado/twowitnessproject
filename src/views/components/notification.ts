@@ -13,6 +13,7 @@ export interface NotificationOptions {
 /**
  * Render notification component
  * Used in views to display flash messages from URL params
+ * Zero-CSS version: Uses semantic HTML with no styling or JavaScript
  */
 export function renderNotification(options: NotificationOptions = {}): string {
   const { message, type = "info" } = options;
@@ -28,30 +29,19 @@ export function renderNotification(options: NotificationOptions = {}): string {
     warning: "⚠",
   };
 
-  return `
-    <div class="notification notification-${type}" id="notification" role="alert">
-      <div class="notification-content">
-        <span class="notification-icon">${icons[type]}</span>
-        <span class="notification-message">${escapeHtml(message)}</span>
-        <button class="notification-close" onclick="closeNotification()" aria-label="Close notification">×</button>
-      </div>
-    </div>
-    <script>
-      // Auto-dismiss notification after 5 seconds
-      setTimeout(() => {
-        closeNotification();
-      }, 5000);
+  const labels = {
+    success: "Success",
+    error: "Error",
+    info: "Information",
+    warning: "Warning",
+  };
 
-      function closeNotification() {
-        const notification = document.getElementById('notification');
-        if (notification) {
-          notification.style.opacity = '0';
-          setTimeout(() => {
-            notification.style.display = 'none';
-          }, 300);
-        }
-      }
-    </script>
+  // Use details/summary for dismissible notification (no JavaScript needed)
+  return `
+    <details open role="alert">
+      <summary><strong>${icons[type]} ${labels[type]}</strong></summary>
+      <p>${escapeHtml(message)}</p>
+    </details>
   `;
 }
 

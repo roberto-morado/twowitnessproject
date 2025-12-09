@@ -20,26 +20,26 @@ export function renderLoginAttempts(data: LoginAttemptsViewData): string {
 
   const content = `
     <h1>🔒 Login Attempts</h1>
-    <p style="margin-bottom: 40px;">
+    <p>
       Security monitoring - Recent login attempts (${attempts.length} total)
       <br>
-      <span style="color: #28a745;">✓ ${successCount} successful</span> •
-      <span style="color: #dc3545;">✗ ${failedCount} failed</span>
+      <span>✓ ${successCount} successful</span> •
+      <span>✗ ${failedCount} failed</span>
     </p>
 
     ${attempts.length === 0 ? `
-      <div style="padding: 40px; border: 1px solid #000; text-align: center;">
+      <div>
         <p>No login attempts recorded yet.</p>
       </div>
     ` : `
-      <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; border: 2px solid #000;">
+      <div>
+        <table>
           <thead>
-            <tr style="background: #f5f5f5;">
-              <th style="padding: 15px; border: 1px solid #000; text-align: left;">Time</th>
-              <th style="padding: 15px; border: 1px solid #000; text-align: left;">Username</th>
-              <th style="padding: 15px; border: 1px solid #000; text-align: left;">IP Address</th>
-              <th style="padding: 15px; border: 1px solid #000; text-align: center;">Result</th>
+            <tr>
+              <th>Time</th>
+              <th>Username</th>
+              <th>IP Address</th>
+              <th>Result</th>
             </tr>
           </thead>
           <tbody>
@@ -51,22 +51,22 @@ export function renderLoginAttempts(data: LoginAttemptsViewData): string {
                 : "background: #fff3f3;";
 
               return `
-                <tr style="${rowStyle}">
-                  <td style="padding: 12px; border: 1px solid #000; font-size: 0.9em;">
+                <tr>
+                  <td>
                     ${formattedTime}
                     <br>
-                    <small style="color: #666;">${formatTimeAgo(attempt.timestamp)}</small>
+                    <small>${formatTimeAgo(attempt.timestamp)}</small>
                   </td>
-                  <td style="padding: 12px; border: 1px solid #000; font-family: monospace;">
+                  <td>
                     ${escapeHtml(attempt.username)}
                   </td>
-                  <td style="padding: 12px; border: 1px solid #000; font-family: monospace; font-size: 0.9em;">
+                  <td>
                     ${escapeHtml(attempt.ip)}
                   </td>
-                  <td style="padding: 12px; border: 1px solid #000; text-align: center;">
+                  <td>
                     ${attempt.success
-                      ? '<span style="color: #28a745; font-weight: bold;">✓ Success</span>'
-                      : '<span style="color: #dc3545; font-weight: bold;">✗ Failed</span>'
+                      ? '<span>✓ Success</span>'
+                      : '<span>✗ Failed</span>'
                     }
                   </td>
                 </tr>
@@ -76,9 +76,9 @@ export function renderLoginAttempts(data: LoginAttemptsViewData): string {
         </table>
       </div>
 
-      <div style="margin-top: 30px; padding: 20px; border: 2px solid #000; background: #f9f9f9;">
+      <div>
         <h3>Security Tips</h3>
-        <ul style="margin: 10px 0; padding-left: 20px;">
+        <ul>
           <li>Multiple failed attempts from the same IP may indicate a brute force attack</li>
           <li>Failed attempts with correct username but wrong password suggest credential stuffing</li>
           <li>Monitor for unusual patterns in login times or IP addresses</li>
