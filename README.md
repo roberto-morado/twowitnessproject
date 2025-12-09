@@ -139,6 +139,55 @@ ADMIN_USER=yourusername
 ADMIN_PASS=yourpassword
 ```
 
+**For Enhanced Security (Optional):** Use hashed passwords instead of plain text. See [Password Security Migration](#password-security-migration) below.
+
+### Password Security Migration
+
+For enhanced security, you can migrate from plain text passwords to hashed passwords using PBKDF2 with 100,000 iterations.
+
+#### Generate Password Hash
+
+Use the included helper script:
+
+```bash
+deno run --allow-env scripts/generate_password_hash.ts "YourSecurePassword"
+```
+
+This will output:
+```
+✅ Password hash generated successfully!
+
+Add these to your Deno Deploy environment variables:
+
+ADMIN_PASS_SALT=a1b2c3d4e5f6...
+ADMIN_PASS_HASH=9f8e7d6c5b4a...
+```
+
+#### Migration Steps
+
+1. **Generate hash** using the script above
+2. **Add to Deno Deploy:**
+   - Go to project settings → Environment Variables
+   - Add `ADMIN_PASS_SALT` with the generated salt value
+   - Add `ADMIN_PASS_HASH` with the generated hash value
+3. **Deploy and test** - Login should still work
+4. **Remove `ADMIN_PASS`** once confirmed working (optional - can keep as fallback)
+
+#### How It Works
+
+The authentication system checks credentials in this order:
+
+1. If both `ADMIN_PASS_HASH` and `ADMIN_PASS_SALT` exist → **Use hashed password** (PBKDF2-SHA256, 100k iterations)
+2. Otherwise, if `ADMIN_PASS` exists → Use plain text password
+
+Benefits:
+- ✅ **Backward compatible** - plain text still works
+- ✅ **Zero downtime** - can test hashed passwords while keeping plain text
+- ✅ **Flexible** - migrate when convenient
+- ✅ **More secure** - passwords not stored in plain text
+
+**Note:** If you encounter character limits in Deno Deploy environment variables, the generated hash/salt values can be stored and the script re-run when needed.
+
 These credentials will be automatically hashed with SHA-256 on first startup. The admin dashboard is accessible at `/login`.
 
 ### Application Config
