@@ -28,28 +28,22 @@ export function renderVideos(data: VideosViewData = { videos: [] }): string {
 
     <section>
       <h2>Find Us On</h2>
-      <ul>
-        <li>
-          <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">▶️ YouTube</a>
-          - Full-length videos and vlogs
-        </li>
-        <li>
-          <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">📷 Instagram</a>
-          - Daily updates and stories
-        </li>
-        <li>
-          <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">💬 Discord</a>
-          - Join our community server
-        </li>
-        <li>
-          <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">🎵 TikTok</a>
-          - Short clips and highlights
-        </li>
-        <li>
-          <a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">🧵 Threads</a>
-          - Updates and conversations
-        </li>
-      </ul>
+      <dl>
+        <dt><a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">▶️ YouTube</a></dt>
+        <dd>Full-length videos and vlogs</dd>
+
+        <dt><a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">📷 Instagram</a></dt>
+        <dd>Daily updates and stories</dd>
+
+        <dt><a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">💬 Discord</a></dt>
+        <dd>Join our community server</dd>
+
+        <dt><a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">🎵 TikTok</a></dt>
+        <dd>Short clips and highlights</dd>
+
+        <dt><a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">🧵 Threads</a></dt>
+        <dd>Updates and conversations</dd>
+      </dl>
     </section>
 
     <section>

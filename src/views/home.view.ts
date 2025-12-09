@@ -26,24 +26,19 @@ export function renderHome(data: HomeViewData = {}): string {
 
     <section>
       <h2>Our Ministry</h2>
-      <ul>
-        <li>
-          <strong>🚐 Life on the Road</strong>
-          <p>We've transformed a van into our home, allowing us to travel wherever God calls us to share His word.</p>
-        </li>
-        <li>
-          <strong>📖 Street Evangelism</strong>
-          <p>Meeting people where they are, sharing the Gospel in cities and towns across the nation.</p>
-        </li>
-        <li>
-          <strong>🎥 Documenting the Journey</strong>
-          <p>Sharing our experiences and encounters through videos on social media to inspire others.</p>
-        </li>
-        <li>
-          <strong>🙏 Faith in Action</strong>
-          <p>Living by faith, trusting God to provide as we dedicate our lives to His service.</p>
-        </li>
-      </ul>
+      <dl>
+        <dt>🚐 Life on the Road</dt>
+        <dd>We've transformed a van into our home, allowing us to travel wherever God calls us to share His word.</dd>
+
+        <dt>📖 Street Evangelism</dt>
+        <dd>Meeting people where they are, sharing the Gospel in cities and towns across the nation.</dd>
+
+        <dt>🎥 Documenting the Journey</dt>
+        <dd>Sharing our experiences and encounters through videos on social media to inspire others.</dd>
+
+        <dt>🙏 Faith in Action</dt>
+        <dd>Living by faith, trusting God to provide as we dedicate our lives to His service.</dd>
+      </dl>
     </section>
 
     <section>
