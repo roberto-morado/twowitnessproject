@@ -82,47 +82,43 @@ export function renderLayout(data: LayoutData): string {
   ${activeNav === "donate" ? '<script async src="https://js.stripe.com/v3/buy-button.js"></script>' : ""}
 </head>
 <body>
-  ${notification ? renderNotification(notification) : ""}
   <header>
-    <nav>
-      <strong><a href="/">${AppConfig.ministry.name}</a></strong>
-      <ul>
-        <li><a href="/">${activeNav === "home" ? "<strong>Home</strong> (current page)" : "Home"}</a></li>
-        <li><a href="/about">${activeNav === "about" ? "<strong>About</strong> (current page)" : "About"}</a></li>
-        <li><a href="/videos">${activeNav === "videos" ? "<strong>Videos</strong> (current page)" : "Videos"}</a></li>
-        <li><a href="/testimonials">${activeNav === "testimonials" ? "<strong>Testimonials</strong> (current page)" : "Testimonials"}</a></li>
-        <li><a href="/donate">${activeNav === "donate" ? "<strong>Donate</strong> (current page)" : "Donate"}</a></li>
-      </ul>
-    </nav>
+    <h1><a href="/">${AppConfig.ministry.name}</a></h1>
+    <p><em>${AppConfig.ministry.tagline}</em></p>
   </header>
+
+  <nav>
+    <a href="/" ${activeNav === "home" ? 'aria-current="page"' : ""}>Home</a> |
+    <a href="/about" ${activeNav === "about" ? 'aria-current="page"' : ""}>About</a> |
+    <a href="/videos" ${activeNav === "videos" ? 'aria-current="page"' : ""}>Videos</a> |
+    <a href="/testimonials" ${activeNav === "testimonials" ? 'aria-current="page"' : ""}>Testimonials</a> |
+    <a href="/donate" ${activeNav === "donate" ? 'aria-current="page"' : ""}>Donate</a>
+  </nav>
+
+  ${notification ? renderNotification(notification) : ""}
 
   <main>
     ${content}
   </main>
 
+  <hr>
+
   <footer>
-    <hr>
-    <section>
-      <h2>${AppConfig.ministry.name}</h2>
-      <p>${AppConfig.ministry.tagline}</p>
-      <p>Contact: <a href="mailto:${AppConfig.contact.email}">${AppConfig.contact.email}</a></p>
-    </section>
-    <section>
-      <h2>Follow Us</h2>
-      <ul>
-        <li><a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a></li>
-        <li><a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">Instagram</a></li>
-        <li><a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">Discord</a></li>
-        <li><a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">Threads</a></li>
-        <li><a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">TikTok</a></li>
-      </ul>
-    </section>
-    <section>
-      <h2>Support Our Ministry</h2>
-      <p>Help us spread the Gospel - <a href="/donate">Donate</a></p>
-    </section>
-    <hr>
-    <p><small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></small></p>
+    <p>
+      <strong>Follow us:</strong>
+      <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a> |
+      <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">Instagram</a> |
+      <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">Discord</a> |
+      <a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">Threads</a> |
+      <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">TikTok</a>
+    </p>
+    <p>
+      <strong>Contact:</strong> <a href="mailto:${AppConfig.contact.email}">${AppConfig.contact.email}</a> |
+      <a href="/donate">Support our ministry</a>
+    </p>
+    <p>
+      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></small>
+    </p>
   </footer>
 </body>
 </html>`;
