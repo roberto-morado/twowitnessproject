@@ -81,13 +81,13 @@ export function renderSettings(data: SettingsViewData): string {
 </head>
 <body>
   <main>
-    <div class="container">
-      <div class="content-section">
+    <div>
+      <div>
         <h1>⚙️ Admin Settings</h1>
         <p>Logged in as: <strong>${username}</strong> | <a href="/dashboard/prayers">← Back to Dashboard</a></p>
 
         ${showSuccess ? `
-          <div class="success-message">
+          <div>
             <strong>✓ Settings saved successfully!</strong>
           </div>
         ` : ""}
@@ -96,14 +96,14 @@ export function renderSettings(data: SettingsViewData): string {
         <form method="POST" action="/dashboard/settings/webhooks">
           ${csrfToken ? CsrfService.generateTokenInput(csrfToken) : ""}
 
-          <div class="settings-section">
+          <div>
             <h2>🔔 Discord Webhooks</h2>
             <p>Configure Discord webhooks to receive notifications about prayer requests and testimonials.</p>
 
-            <h3 style="margin-top: 30px;">Admin Webhook (Private)</h3>
+            <h3>Admin Webhook (Private)</h3>
             <p>Receives all prayer requests (public and private) and testimonial submissions.</p>
 
-            <div class="form-group">
+            <div>
               <label for="admin_webhook_url">Webhook URL:</label>
               <input
                 type="url"
@@ -117,7 +117,7 @@ export function renderSettings(data: SettingsViewData): string {
               </small>
             </div>
 
-            <div class="form-group checkbox-group">
+            <div>
               <input
                 type="checkbox"
                 id="admin_webhook_enabled"
@@ -128,14 +128,14 @@ export function renderSettings(data: SettingsViewData): string {
               <label for="admin_webhook_enabled">Enable admin webhook</label>
             </div>
 
-            <button type="button" class="test-button" onclick="testWebhook('admin')">
+            <button type="button" onclick="testWebhook('admin')">
               Test Admin Webhook
             </button>
 
-            <h3 style="margin-top: 40px;">Community Webhook (Public)</h3>
+            <h3>Community Webhook (Public)</h3>
             <p>Receives only public prayer requests for community prayer channels.</p>
 
-            <div class="form-group">
+            <div>
               <label for="community_webhook_url">Webhook URL:</label>
               <input
                 type="url"
@@ -149,7 +149,7 @@ export function renderSettings(data: SettingsViewData): string {
               </small>
             </div>
 
-            <div class="form-group checkbox-group">
+            <div>
               <input
                 type="checkbox"
                 id="community_webhook_enabled"
@@ -160,12 +160,12 @@ export function renderSettings(data: SettingsViewData): string {
               <label for="community_webhook_enabled">Enable community webhook</label>
             </div>
 
-            <button type="button" class="test-button" onclick="testWebhook('community')">
+            <button type="button" onclick="testWebhook('community')">
               Test Community Webhook
             </button>
           </div>
 
-          <button type="submit" class="btn" style="width: 100%; max-width: 300px;">
+          <button type="submit">
             💾 Save Settings
           </button>
         </form>

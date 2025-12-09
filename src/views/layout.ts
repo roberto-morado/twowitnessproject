@@ -78,28 +78,21 @@ export function renderLayout(data: LayoutData): string {
   </script>
   ` : ""}
 
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="/css/styles.css">
-
   <!-- Stripe (only on donate page, moved conditionally) -->
   ${activeNav === "donate" ? '<script async src="https://js.stripe.com/v3/buy-button.js"></script>' : ""}
 </head>
 <body>
   ${notification ? renderNotification(notification) : ""}
   <header>
-    <nav class="navbar">
-      <div class="container">
-        <a href="/" class="logo">
-          <h1>${AppConfig.ministry.name}</h1>
-        </a>
-        <ul class="nav-menu">
-          <li><a href="/" class="${activeNav === "home" ? "active" : ""}">Home</a></li>
-          <li><a href="/about" class="${activeNav === "about" ? "active" : ""}">About</a></li>
-          <li><a href="/videos" class="${activeNav === "videos" ? "active" : ""}">Videos</a></li>
-          <li><a href="/testimonials" class="${activeNav === "testimonials" ? "active" : ""}">Testimonials</a></li>
-          <li><a href="/donate" class="${activeNav === "donate" ? "active" : ""}">Donate</a></li>
-        </ul>
-      </div>
+    <nav>
+      <strong><a href="/">${AppConfig.ministry.name}</a></strong>
+      <ul>
+        <li><a href="/">${activeNav === "home" ? "<strong>Home</strong> (current page)" : "Home"}</a></li>
+        <li><a href="/about">${activeNav === "about" ? "<strong>About</strong> (current page)" : "About"}</a></li>
+        <li><a href="/videos">${activeNav === "videos" ? "<strong>Videos</strong> (current page)" : "Videos"}</a></li>
+        <li><a href="/testimonials">${activeNav === "testimonials" ? "<strong>Testimonials</strong> (current page)" : "Testimonials"}</a></li>
+        <li><a href="/donate">${activeNav === "donate" ? "<strong>Donate</strong> (current page)" : "Donate"}</a></li>
+      </ul>
     </nav>
   </header>
 
@@ -108,37 +101,29 @@ export function renderLayout(data: LayoutData): string {
   </main>
 
   <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>${AppConfig.ministry.name}</h3>
-          <p>${AppConfig.ministry.tagline}</p>
-          <p><a href="mailto:${AppConfig.contact.email}">${AppConfig.contact.email}</a></p>
-        </div>
-        <div class="footer-section">
-          <h3>Follow Us</h3>
-          <div class="social-links">
-            <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a>
-            <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">Instagram</a>
-            <a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">Discord</a>
-            <a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">Threads</a>
-            <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">TikTok</a>
-          </div>
-        </div>
-        <div class="footer-section">
-          <h3>Support Our Ministry</h3>
-          <p>Help us spread the Gospel</p>
-          <a href="/donate" class="btn">Donate</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></p>
-      </div>
-    </div>
+    <hr>
+    <section>
+      <h2>${AppConfig.ministry.name}</h2>
+      <p>${AppConfig.ministry.tagline}</p>
+      <p>Contact: <a href="mailto:${AppConfig.contact.email}">${AppConfig.contact.email}</a></p>
+    </section>
+    <section>
+      <h2>Follow Us</h2>
+      <ul>
+        <li><a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a></li>
+        <li><a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">Discord</a></li>
+        <li><a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">Threads</a></li>
+        <li><a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">TikTok</a></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Support Our Ministry</h2>
+      <p>Help us spread the Gospel - <a href="/donate">Donate</a></p>
+    </section>
+    <hr>
+    <p><small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></small></p>
   </footer>
-
-  <!-- Form Loading States -->
-  <script src="/js/forms.js"></script>
 </body>
 </html>`;
 }
