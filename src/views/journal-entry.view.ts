@@ -56,6 +56,6 @@ export function renderJournalEntryPage(entry: JournalEntryWithLocation): string 
   return renderLayout({
     title: `${entry.title} - Two Witness Project`,
     content: renderJournalEntryContent(entry),
-    activePage: "journal",
+    activeNav: "journal",
   });
 }

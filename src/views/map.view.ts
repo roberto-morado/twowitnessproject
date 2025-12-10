@@ -82,6 +82,6 @@ export function renderMapPage(locations: Location[]): string {
   return renderLayout({
     title: "Ministry Journey Map - Two Witness Project",
     content: renderMapContent(locations),
-    activePage: "map",
+    activeNav: "map",
   });
 }
