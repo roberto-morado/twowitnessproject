@@ -7,6 +7,8 @@ import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "@core/response.ts";
 import { renderHome } from "@views/home.view.ts";
 import { TestimonialService } from "../services/testimonial.service.ts";
+import { LocationService } from "../services/location.service.ts";
+import { JournalService } from "../services/journal.service.ts";
 
 export class HomeController implements Controller {
   getRoutes(): Route[] {
@@ -21,15 +23,24 @@ export class HomeController implements Controller {
 
   private async index(): Promise<Response> {
     try {
-      // Fetch latest 3 approved testimonials for home page
-      const allTestimonials = await TestimonialService.getApprovedTestimonials();
+      // Fetch data for home page
+      const [allTestimonials, currentLocation, featuredJournalEntries] = await Promise.all([
+        TestimonialService.getApprovedTestimonials(),
+        LocationService.getCurrent(),
+        JournalService.getFeatured(2),
+      ]);
+
       const testimonials = allTestimonials.slice(0, 3);
 
-      const html = renderHome({ testimonials });
+      const html = renderHome({
+        testimonials,
+        currentLocation,
+        featuredJournalEntries,
+      });
       return ResponseFactory.html(html);
     } catch (error) {
       console.error("Home page error:", error);
-      // Fallback to rendering without testimonials
+      // Fallback to rendering without optional data
       const html = renderHome();
       return ResponseFactory.html(html);
     }

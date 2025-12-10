@@ -1,19 +1,19 @@
 /**
- * About Controller
- * Follows Single Responsibility Principle - handles about page logic only
+ * Map Controller
+ * Handles ministry journey map page
  */
 
 import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "@core/response.ts";
-import { renderAbout } from "@views/about.view.ts";
+import { renderMapPage } from "@views/map.view.ts";
 import { LocationService } from "../services/location.service.ts";
 
-export class AboutController implements Controller {
+export class MapController implements Controller {
   getRoutes(): Route[] {
     return [
       {
         method: "GET",
-        pattern: "/about",
+        pattern: "/map",
         handler: this.index.bind(this),
       },
     ];
@@ -22,12 +22,12 @@ export class AboutController implements Controller {
   private async index(): Promise<Response> {
     try {
       const locations = await LocationService.getAll();
-      const html = renderAbout(locations);
+      const html = renderMapPage(locations);
       return ResponseFactory.html(html);
     } catch (error) {
-      console.error("About page error:", error);
-      // Fallback to rendering without locations
-      const html = renderAbout();
+      console.error("Map page error:", error);
+      // Fallback to empty map
+      const html = renderMapPage([]);
       return ResponseFactory.html(html);
     }
   }

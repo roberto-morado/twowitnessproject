@@ -8,7 +8,7 @@ import { AppConfig } from "@config/app.config.ts";
 export interface DashboardLayoutData {
   title: string;
   content: string;
-  activeTab?: "prayers" | "analytics" | "testimonials" | "security" | "settings";
+  activeTab?: "prayers" | "analytics" | "testimonials" | "security" | "settings" | "locations" | "journal";
   username: string;
 }
 
@@ -43,6 +43,12 @@ export function renderDashboardLayout(data: DashboardLayoutData): string {
       </li>
       <li>
         <a href="/dashboard/testimonials">${activeTab === "testimonials" ? "<strong>✨ Testimonials</strong> (current)" : "✨ Testimonials"}</a>
+      </li>
+      <li>
+        <a href="/dashboard/locations">${activeTab === "locations" ? "<strong>📍 Locations</strong> (current)" : "📍 Locations"}</a>
+      </li>
+      <li>
+        <a href="/dashboard/journal">${activeTab === "journal" ? "<strong>📖 Journal</strong> (current)" : "📖 Journal"}</a>
       </li>
       <li>
         <a href="/dashboard/login-attempts">${activeTab === "security" ? "<strong>🔒 Security</strong> (current)" : "🔒 Security"}</a>
