@@ -46,9 +46,9 @@ export class JournalController implements Controller {
   /**
    * Individual journal entry page
    */
-  private async show(_request: Request, params: Record<string, string>): Promise<Response> {
+  private async show(_request: Request, params?: Record<string, string>): Promise<Response> {
     try {
-      const slug = params.slug;
+      const slug = params?.slug;
       if (!slug) {
         return ResponseFactory.notFound();
       }

@@ -129,6 +129,6 @@ export function renderJournalListPage(
   return renderLayout({
     title: pageTitle,
     content: renderJournalListContent(entries, currentPage, totalPages, total),
-    activePage: "journal",
+    activeNav: "journal",
   });
 }
