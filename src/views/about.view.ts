@@ -4,8 +4,10 @@
 
 import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
+import type { Location } from "../models/location.model.ts";
+import { renderUSAMap } from "../components/usa-map.component.ts";
 
-export function renderAbout(): string {
+export function renderAbout(locations: Location[] = []): string {
   const content = `
     <header>
       <h1>About Our Ministry</h1>
@@ -56,6 +58,17 @@ export function renderAbout(): string {
           <li>Building community among believers we meet along the way</li>
         </ul>
       </section>
+
+      ${locations.length > 0 ? `
+      <section>
+        <h2>Our Journey Across America</h2>
+        <p>
+          Follow our travels as we share the Gospel across the nation.
+          <a href="/map">View full map and location details</a>
+        </p>
+        ${renderUSAMap(locations, "small", true)}
+      </section>
+      ` : ""}
 
       <section>
         <h2>Our Beliefs</h2>
