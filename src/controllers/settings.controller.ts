@@ -1,12 +1,13 @@
 /**
  * Settings Controller
- * Handles admin settings configuration (Discord webhooks, etc.)
+ * Handles admin settings configuration (Discord webhooks, Email SMTP, etc.)
  */
 
 import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "@core/response.ts";
 import { AuthService } from "../services/auth.service.ts";
 import { DiscordService } from "../services/discord.service.ts";
+import { EmailConfigService, EmailService } from "../services/email.service.ts";
 import { CsrfService } from "../services/csrf.service.ts";
 import { renderSettings } from "../views/admin/settings.view.ts";
 
@@ -27,6 +28,16 @@ export class SettingsController implements Controller {
         method: "POST",
         pattern: "/dashboard/settings/test-webhook",
         handler: this.testWebhook.bind(this),
+      },
+      {
+        method: "POST",
+        pattern: "/dashboard/settings/email",
+        handler: this.saveEmail.bind(this),
+      },
+      {
+        method: "POST",
+        pattern: "/dashboard/settings/test-email",
+        handler: this.testEmail.bind(this),
       },
     ];
   }
@@ -50,18 +61,44 @@ export class SettingsController implements Controller {
     }
 
     try {
-      // Get current webhook configurations
-      const adminWebhook = await DiscordService.getWebhook("admin");
-      const communityWebhook = await DiscordService.getWebhook("community");
+      const url = new URL(request.url);
+
+      // Get current configurations
+      const [adminWebhook, communityWebhook, emailConfig] = await Promise.all([
+        DiscordService.getWebhook("admin"),
+        DiscordService.getWebhook("community"),
+        EmailConfigService.getConfig(),
+      ]);
 
       // Generate CSRF token
       const csrfToken = CsrfService.generateToken();
+
+      // Parse success/error messages
+      let successMessage: string | undefined;
+      let errorMessage: string | undefined;
+
+      const successParam = url.searchParams.get("success");
+      if (successParam === "1") {
+        successMessage = "Webhook settings saved successfully!";
+      } else if (successParam === "email_saved") {
+        successMessage = "Email settings saved successfully!";
+      } else if (successParam === "test_sent") {
+        successMessage = "Test email sent successfully! Check your inbox.";
+      }
+
+      const errorParam = url.searchParams.get("error");
+      if (errorParam) {
+        errorMessage = decodeURIComponent(errorParam);
+      }
 
       const html = renderSettings({
         username,
         adminWebhook,
         communityWebhook,
+        emailConfig,
         csrfToken,
+        successMessage,
+        errorMessage,
       });
 
       return new Response(html, {
@@ -172,6 +209,124 @@ export class SettingsController implements Controller {
       });
     } catch (error) {
       console.error("Test webhook error:", error);
+      return ResponseFactory.json({ success: false, error: "An error occurred" }, { status: 500 });
+    }
+  }
+
+  /**
+   * POST /dashboard/settings/email - Save email configuration
+   */
+  private async saveEmail(request: Request): Promise<Response> {
+    // Check authentication
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+
+    if (!username) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    try {
+      const formData = await request.formData();
+
+      // Validate CSRF token
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        return ResponseFactory.redirect("/dashboard/settings?error=invalid_token");
+      }
+
+      const smtpHost = formData.get("smtpHost")?.toString();
+      const smtpPort = parseInt(formData.get("smtpPort")?.toString() || "587");
+      const smtpUsername = formData.get("smtpUsername")?.toString();
+      const smtpPassword = formData.get("smtpPassword")?.toString();
+      const fromEmail = formData.get("fromEmail")?.toString();
+      const fromName = formData.get("fromName")?.toString();
+      const isEnabled = formData.get("isEnabled") === "true";
+      const useTLS = formData.get("useTLS") === "true";
+
+      // Validate required fields
+      if (!smtpHost || !smtpUsername || !fromEmail || !fromName) {
+        return ResponseFactory.redirect("/dashboard/settings?error=missing_fields");
+      }
+
+      // Get existing config to preserve password if not provided
+      const existingConfig = await EmailConfigService.getConfig();
+      const finalPassword = smtpPassword || existingConfig?.smtpPassword || "";
+
+      if (!smtpPassword && !existingConfig) {
+        return ResponseFactory.redirect("/dashboard/settings?error=password_required");
+      }
+
+      // Save configuration
+      await EmailConfigService.saveConfig({
+        smtpHost,
+        smtpPort,
+        smtpUsername,
+        smtpPassword: finalPassword,
+        fromEmail,
+        fromName,
+        isEnabled,
+        useTLS,
+        updatedBy: username,
+      });
+
+      // Redirect with success message
+      return ResponseFactory.redirect("/dashboard/settings?success=email_saved");
+    } catch (error) {
+      console.error("Save email settings error:", error);
+      return ResponseFactory.redirect("/dashboard/settings?error=save_failed");
+    }
+  }
+
+  /**
+   * POST /dashboard/settings/test-email - Send test email
+   */
+  private async testEmail(request: Request): Promise<Response> {
+    // Check authentication
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+
+    if (!username) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    try {
+      const formData = await request.formData();
+
+      // Validate CSRF token
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        return ResponseFactory.json({ success: false, error: "Invalid security token" }, { status: 403 });
+      }
+
+      const testEmail = formData.get("testEmail")?.toString();
+
+      if (!testEmail) {
+        return ResponseFactory.json({ success: false, error: "Email address is required" }, { status: 400 });
+      }
+
+      // Send test email
+      const result = await EmailService.sendTestEmail(testEmail);
+
+      return ResponseFactory.json({
+        success: result.success,
+        message: result.success
+          ? "Test email sent successfully! Check your inbox."
+          : result.error || "Failed to send test email",
+      });
+    } catch (error) {
+      console.error("Test email error:", error);
       return ResponseFactory.json({ success: false, error: "An error occurred" }, { status: 500 });
     }
   }
