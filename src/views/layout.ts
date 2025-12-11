@@ -90,6 +90,8 @@ export function renderLayout(data: LayoutData): string {
   <nav>
     <a href="/" ${activeNav === "home" ? 'aria-current="page"' : ""}>Home</a> |
     <a href="/about" ${activeNav === "about" ? 'aria-current="page"' : ""}>About</a> |
+    <a href="/map" ${activeNav === "map" ? 'aria-current="page"' : ""}>Map</a> |
+    <a href="/journal" ${activeNav === "journal" ? 'aria-current="page"' : ""}>Journal</a> |
     <a href="/videos" ${activeNav === "videos" ? 'aria-current="page"' : ""}>Videos</a> |
     <a href="/testimonials" ${activeNav === "testimonials" ? 'aria-current="page"' : ""}>Testimonials</a> |
     <a href="/donate" ${activeNav === "donate" ? 'aria-current="page"' : ""}>Donate</a>
