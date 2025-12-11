@@ -45,7 +45,6 @@ import { MapController } from "./src/controllers/map.controller.ts";
 import { JournalController } from "./src/controllers/journal.controller.ts";
 import { LocationDashboardController } from "./src/controllers/location-dashboard.controller.ts";
 import { JournalDashboardController } from "./src/controllers/journal-dashboard.controller.ts";
-import { EmailSettingsController } from "./src/controllers/email-settings.controller.ts";
 
 /**
  * Bootstrap the application
