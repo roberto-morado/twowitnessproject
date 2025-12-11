@@ -42,6 +42,11 @@ export function renderSettings(data: SettingsViewData): string {
       <h2>📧 Email Settings</h2>
       <p>Configure SMTP settings to send automated emails for prayer confirmations, testimonial receipts, and other ministry communications.</p>
 
+      <div style="background: #fef3c7; padding: 1rem; border-left: 4px solid #f59e0b; margin: 1rem 0;">
+        <strong>⚠️ Deno Deploy Limitation:</strong>
+        <p>Deno Deploy blocks outbound connections on standard SMTP ports (25, 465, 587) to prevent abuse. If you're running on Deno Deploy, you can save your settings for future use, but email sending won't work until you migrate to a different platform (VPS, Docker, etc.) or use an email API service instead of SMTP.</p>
+      </div>
+
       ${emailConfig ? `
         <details>
           <summary>Current Email Configuration</summary>
@@ -176,6 +181,18 @@ export function renderSettings(data: SettingsViewData): string {
               >
               Enable email sending
             </label>
+          </div>
+
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                name="skipTest"
+                value="true"
+              >
+              Skip connection test (use on Deno Deploy or restricted environments)
+            </label>
+            <small>Check this if you're on Deno Deploy and want to save settings for future use</small>
           </div>
         </fieldset>
 

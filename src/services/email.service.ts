@@ -94,9 +94,27 @@ export class EmailService {
       return { success: true };
     } catch (error) {
       console.error("SMTP connection test error:", error);
+
+      // Provide detailed error messages
+      if (error instanceof Error) {
+        // Check if it's a connection refused error (common on Deno Deploy)
+        if (error.message.includes("Connection refused") || error.message.includes("ECONNREFUSED")) {
+          return {
+            success: false,
+            error: `Connection refused (likely Deno Deploy port restriction). Host: ${config.smtpHost}, Port: ${config.smtpPort}`,
+          };
+        }
+
+        // Other errors
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred while testing connection",
+        error: "Unknown error occurred while testing connection",
       };
     }
   }
@@ -158,9 +176,25 @@ export class EmailService {
       return { success: true };
     } catch (error) {
       console.error("Email sending error:", error);
+
+      if (error instanceof Error) {
+        // Check for Deno Deploy port restrictions
+        if (error.message.includes("Connection refused") || error.message.includes("ECONNREFUSED")) {
+          return {
+            success: false,
+            error: "Connection refused - SMTP ports are blocked on Deno Deploy. Email sending is not available on this platform.",
+          };
+        }
+
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: "Unknown error occurred while sending email",
       };
     }
   }
