@@ -17,8 +17,7 @@ export class EmailConfigService {
    * Get email configuration
    */
   static async getConfig(): Promise<EmailConfig | null> {
-    const result = await db.kv.get<EmailConfig>(this.CONFIG_KEY);
-    return result.value;
+    return await db.get<EmailConfig>(this.CONFIG_KEY);
   }
 
   /**
@@ -31,7 +30,7 @@ export class EmailConfigService {
       updatedAt: new Date(),
     };
 
-    await db.kv.set(this.CONFIG_KEY, emailConfig);
+    await db.set(this.CONFIG_KEY, emailConfig);
   }
 
   /**
@@ -65,10 +64,10 @@ export class EmailService {
 
       // Dynamic import of denomailer
       // Using dynamic import so the app works even if denomailer isn't installed
-      let SmtpClient;
+      let SMTPClient;
       try {
         const denomailer = await import("https://deno.land/x/denomailer@1.6.0/mod.ts");
-        SmtpClient = denomailer.SmtpClient;
+        SMTPClient = denomailer.SMTPClient;
       } catch (error) {
         console.error("Failed to import denomailer:", error);
         return {
@@ -78,7 +77,7 @@ export class EmailService {
       }
 
       // Create SMTP client
-      const client = new SmtpClient();
+      const client = new SMTPClient();
 
       // Connect to SMTP server
       await client.connectTLS({
