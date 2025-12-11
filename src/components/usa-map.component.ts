@@ -88,14 +88,16 @@ export function renderUSAMap(
 ): string {
   const dims = MAP_DIMENSIONS[size];
 
+  // Max width based on size, but always responsive
+  const maxWidth = size === "full" ? "960px" : size === "small" ? "480px" : "320px";
+
   return `
     <svg
-      width="${dims.width}"
-      height="${dims.height}"
       viewBox="${dims.viewBox}"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="Map of United States showing ministry locations"
+      style="width: 100%; max-width: ${maxWidth}; height: auto;"
     >
       ${showOutline ? `
         <path
