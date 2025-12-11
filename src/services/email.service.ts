@@ -48,6 +48,60 @@ export class EmailConfigService {
  */
 export class EmailService {
   /**
+   * Test SMTP connection with given configuration
+   * Verifies credentials without sending an email
+   */
+  static async testConnection(config: EmailConfig): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Dynamic import of denomailer
+      let SMTPClient;
+      try {
+        const denomailer = await import("https://deno.land/x/denomailer@1.6.0/mod.ts");
+        SMTPClient = denomailer.SMTPClient;
+      } catch (error) {
+        console.error("Failed to import denomailer:", error);
+        return {
+          success: false,
+          error: "SMTP library not available. Please install denomailer.",
+        };
+      }
+
+      // Create SMTP client with provided config
+      const client = new SMTPClient({
+        connection: {
+          hostname: config.smtpHost,
+          port: config.smtpPort,
+          tls: config.useTLS,
+          auth: {
+            username: config.smtpUsername,
+            password: config.smtpPassword,
+          },
+        },
+      });
+
+      // Test connection by sending a test email to the from address
+      // This verifies both connection and authentication
+      await client.send({
+        from: `${config.fromName} <${config.fromEmail}>`,
+        to: config.fromEmail,
+        subject: "SMTP Connection Test - Two Witness Project",
+        content: "This is a test message to verify SMTP connection. If you see this, your settings are correct!",
+      });
+
+      // Close connection
+      await client.close();
+
+      return { success: true };
+    } catch (error) {
+      console.error("SMTP connection test error:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error occurred while testing connection",
+      };
+    }
+  }
+
+  /**
    * Send an email using SMTP
    * Uses denomailer library for SMTP support
    */
