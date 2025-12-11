@@ -81,7 +81,9 @@ export class SettingsController implements Controller {
       if (successParam === "1") {
         successMessage = "Webhook settings saved successfully!";
       } else if (successParam === "email_saved") {
-        successMessage = "Email settings saved successfully!";
+        successMessage = "Email settings saved and connection test passed!";
+      } else if (successParam === "email_saved_no_test") {
+        successMessage = "Email settings saved (connection test skipped). Settings will be ready when you migrate to a platform that allows SMTP.";
       } else if (successParam === "test_sent") {
         successMessage = "Test email sent successfully! Check your inbox.";
       }
@@ -248,6 +250,7 @@ export class SettingsController implements Controller {
       const fromName = formData.get("fromName")?.toString();
       const isEnabled = formData.get("isEnabled") === "true";
       const useTLS = formData.get("useTLS") === "true";
+      const skipTest = formData.get("skipTest") === "true";
 
       // Validate required fields
       if (!smtpHost || !smtpUsername || !fromEmail || !fromName) {
@@ -277,15 +280,30 @@ export class SettingsController implements Controller {
         updatedBy: username,
       };
 
-      // Test connection BEFORE saving to database
-      const testResult = await EmailService.testConnection(testConfig);
+      // Test connection BEFORE saving to database (unless skipTest is checked)
+      if (!skipTest) {
+        const testResult = await EmailService.testConnection(testConfig);
 
-      if (!testResult.success) {
-        const errorMsg = encodeURIComponent(`Connection test failed: ${testResult.error || "Unknown error"}`);
-        return ResponseFactory.redirect(`/dashboard/settings?error=${errorMsg}`);
+        if (!testResult.success) {
+          // Detect Deno Deploy restriction
+          const isDenoDeployError = testResult.error?.includes("Connection refused") ||
+                                    testResult.error?.includes("ECONNREFUSED");
+
+          let errorMsg: string;
+          if (isDenoDeployError) {
+            errorMsg = encodeURIComponent(
+              "Connection refused - This is likely due to Deno Deploy blocking SMTP ports. " +
+              "Check the 'Skip connection test' option to save settings for future use on a different platform."
+            );
+          } else {
+            errorMsg = encodeURIComponent(`Connection test failed: ${testResult.error || "Unknown error"}`);
+          }
+
+          return ResponseFactory.redirect(`/dashboard/settings?error=${errorMsg}`);
+        }
       }
 
-      // Connection test passed - save configuration
+      // Connection test passed (or skipped) - save configuration
       await EmailConfigService.saveConfig({
         smtpHost,
         smtpPort,
@@ -299,7 +317,8 @@ export class SettingsController implements Controller {
       });
 
       // Redirect with success message
-      return ResponseFactory.redirect("/dashboard/settings?success=email_saved");
+      const successParam = skipTest ? "email_saved_no_test" : "email_saved";
+      return ResponseFactory.redirect(`/dashboard/settings?success=${successParam}`);
     } catch (error) {
       console.error("Save email settings error:", error);
       return ResponseFactory.redirect("/dashboard/settings?error=save_failed");
