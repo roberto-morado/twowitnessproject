@@ -262,7 +262,30 @@ export class SettingsController implements Controller {
         return ResponseFactory.redirect("/dashboard/settings?error=password_required");
       }
 
-      // Save configuration
+      // Build test configuration
+      const testConfig = {
+        id: "default",
+        smtpHost,
+        smtpPort,
+        smtpUsername,
+        smtpPassword: finalPassword,
+        fromEmail,
+        fromName,
+        isEnabled,
+        useTLS,
+        updatedAt: new Date(),
+        updatedBy: username,
+      };
+
+      // Test connection BEFORE saving to database
+      const testResult = await EmailService.testConnection(testConfig);
+
+      if (!testResult.success) {
+        const errorMsg = encodeURIComponent(`Connection test failed: ${testResult.error || "Unknown error"}`);
+        return ResponseFactory.redirect(`/dashboard/settings?error=${errorMsg}`);
+      }
+
+      // Connection test passed - save configuration
       await EmailConfigService.saveConfig({
         smtpHost,
         smtpPort,
