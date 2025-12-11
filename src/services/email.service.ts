@@ -76,15 +76,17 @@ export class EmailService {
         };
       }
 
-      // Create SMTP client
-      const client = new SMTPClient();
-
-      // Connect to SMTP server
-      await client.connectTLS({
-        hostname: config.smtpHost,
-        port: config.smtpPort,
-        username: config.smtpUsername,
-        password: config.smtpPassword,
+      // Create and connect SMTP client
+      const client = new SMTPClient({
+        connection: {
+          hostname: config.smtpHost,
+          port: config.smtpPort,
+          tls: config.useTLS,
+          auth: {
+            username: config.smtpUsername,
+            password: config.smtpPassword,
+          },
+        },
       });
 
       // Send email
