@@ -77,7 +77,6 @@ async function bootstrap(): Promise<Router> {
   router.registerController(new JournalController());
   router.registerController(new LocationDashboardController());
   router.registerController(new JournalDashboardController());
-  router.registerController(new EmailSettingsController());
   router.registerController(new AnalyticsController());
   router.registerController(new SEOController());
   router.registerController(new PrivacyController());
