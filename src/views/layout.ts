@@ -100,16 +100,23 @@ export function renderLayout(data: LayoutData): string {
       console.log('[Style Toggle] Styles disabled, loading semantic HTML only');
     }
 
-    // Toggle function
-    function toggleStyles() {
+    // Toggle function with mobile-friendly feedback
+    window.toggleStyles = function() {
       console.log('[Style Toggle] Toggle clicked');
       const currentState = localStorage.getItem('useStyles') === 'true';
       const newState = !currentState;
       console.log('[Style Toggle] Current state:', currentState, '→ New state:', newState);
-      localStorage.setItem('useStyles', String(newState));
-      console.log('[Style Toggle] Saved to localStorage, reloading page...');
-      location.reload();
-    }
+
+      try {
+        localStorage.setItem('useStyles', String(newState));
+        console.log('[Style Toggle] Saved to localStorage, reloading page...');
+        alert('Styles ' + (newState ? 'enabled' : 'disabled') + '. Page will reload.');
+        location.reload();
+      } catch (error) {
+        alert('Error: ' + error.message);
+        console.error('[Style Toggle] Error:', error);
+      }
+    };
   </script>
 </head>
 <body>
