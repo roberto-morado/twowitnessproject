@@ -6,18 +6,16 @@ import { AppConfig } from "@config/app.config.ts";
 import { renderLayout } from "./layout.ts";
 import type { Testimonial } from "../services/testimonial.service.ts";
 import type { Location } from "../models/location.model.ts";
-import type { JournalEntry } from "../models/journal.model.ts";
 import { escapeHtml } from "@utils/html.ts";
 import { renderCurrentLocationBadge } from "../components/usa-map.component.ts";
 
 export interface HomeViewData {
   testimonials?: Testimonial[];
   currentLocation?: Location | null;
-  featuredJournalEntries?: JournalEntry[];
 }
 
 export function renderHome(data: HomeViewData = {}): string {
-  const { testimonials = [], currentLocation, featuredJournalEntries = [] } = data;
+  const { testimonials = [], currentLocation } = data;
   const content = `
     <header>
       <h1>${AppConfig.ministry.name}</h1>
@@ -64,29 +62,6 @@ export function renderHome(data: HomeViewData = {}): string {
         <a href="/prayers">View Community Prayers</a>
       </nav>
     </section>
-
-    ${featuredJournalEntries.length > 0 ? `
-    <section>
-      <h2>📖 Ministry Journal</h2>
-      <p>Recent experiences and testimonies from our journey</p>
-
-      ${featuredJournalEntries.map(entry => {
-        const dateStr = entry.date.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-        return `
-        <article>
-          <h3><a href="/journal/${entry.slug}">${escapeHtml(entry.title)}</a></h3>
-          <p><time datetime="${entry.date.toISOString()}">${dateStr}</time></p>
-          <p>${escapeHtml(entry.excerpt)}</p>
-          <p><a href="/journal/${entry.slug}">Read more →</a></p>
-        </article>
-        `;
-      }).join("")}
-    </section>
-    ` : ""}
 
     ${testimonials.length > 0 ? `
     <section>
