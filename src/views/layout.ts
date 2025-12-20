@@ -35,8 +35,8 @@ export function renderLayout(data: LayoutData): string {
     notification,
   } = data;
 
-  // Generate emoji favicon SVG
-  const faviconSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👥</text></svg>`;
+  // Generate emoji favicon SVG (properly URL encoded)
+  const faviconSvg = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="90">👥</text></svg>')}`;
 
   return `<!DOCTYPE html>
 <html lang="en">
