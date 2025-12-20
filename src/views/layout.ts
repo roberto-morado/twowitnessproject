@@ -130,14 +130,14 @@ export function renderLayout(data: LayoutData): string {
       <a href="/donate">Support our ministry</a>
     </p>
     <p>
-      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <button id="style-toggle" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;padding:0;font:inherit;">Enable Styles</button></small>
+      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="#" id="style-toggle">Enable Styles</a></small>
     </p>
     <script>
       (function() {
         const toggle = document.getElementById('style-toggle');
         const enabled = localStorage.getItem('useStyles') === 'true';
 
-        // Update button text
+        // Update link text
         toggle.textContent = enabled ? 'Disable Styles' : 'Enable Styles';
 
         // Toggle handler
