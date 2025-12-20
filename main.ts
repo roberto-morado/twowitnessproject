@@ -42,9 +42,7 @@ import { PrivacyController } from "./src/controllers/privacy.controller.ts";
 import { SettingsController } from "./src/controllers/settings.controller.ts";
 import { TestimonialController } from "./src/controllers/testimonial.controller.ts";
 import { MapController } from "./src/controllers/map.controller.ts";
-import { JournalController } from "./src/controllers/journal.controller.ts";
 import { LocationDashboardController } from "./src/controllers/location-dashboard.controller.ts";
-import { JournalDashboardController } from "./src/controllers/journal-dashboard.controller.ts";
 
 /**
  * Bootstrap the application
@@ -74,9 +72,7 @@ async function bootstrap(): Promise<Router> {
   router.registerController(new PrayerController());
   router.registerController(new TestimonialController());
   router.registerController(new MapController());
-  router.registerController(new JournalController());
   router.registerController(new LocationDashboardController());
-  router.registerController(new JournalDashboardController());
   router.registerController(new AnalyticsController());
   router.registerController(new SEOController());
   router.registerController(new PrivacyController());
