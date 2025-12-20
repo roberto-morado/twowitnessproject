@@ -43,6 +43,7 @@ import { SettingsController } from "./src/controllers/settings.controller.ts";
 import { TestimonialController } from "./src/controllers/testimonial.controller.ts";
 import { MapController } from "./src/controllers/map.controller.ts";
 import { LocationDashboardController } from "./src/controllers/location-dashboard.controller.ts";
+import { ConnectController } from "./src/controllers/connect.controller.ts";
 
 /**
  * Bootstrap the application
@@ -73,6 +74,7 @@ async function bootstrap(): Promise<Router> {
   router.registerController(new TestimonialController());
   router.registerController(new MapController());
   router.registerController(new LocationDashboardController());
+  router.registerController(new ConnectController());
   router.registerController(new AnalyticsController());
   router.registerController(new SEOController());
   router.registerController(new PrivacyController());
