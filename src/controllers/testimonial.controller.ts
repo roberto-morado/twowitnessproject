@@ -47,6 +47,11 @@ export class TestimonialController implements Controller {
         pattern: "/dashboard/testimonials/create-key",
         handler: this.createKey.bind(this),
       },
+      {
+        method: "POST",
+        pattern: /^\/dashboard\/testimonials\/keys\/([^\/]+)\/delete$/,
+        handler: this.deleteKey.bind(this),
+      },
     ];
   }
 
@@ -453,6 +458,54 @@ export class TestimonialController implements Controller {
     } catch (error) {
       console.error("Create key error:", error);
       return ResponseFactory.error("An error occurred while creating key");
+    }
+  }
+
+  /**
+   * POST /dashboard/testimonials/keys/:id/delete - Delete submission key
+   */
+  private async deleteKey(
+    request: Request,
+    params?: Record<string, string>
+  ): Promise<Response> {
+    // Check authentication
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+
+    if (!username) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    try {
+      const formData = await request.formData();
+
+      // Validate CSRF token
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        return ResponseFactory.error("Invalid security token", 403);
+      }
+
+      const keyId = params?.["0"];
+      if (!keyId) {
+        return ResponseFactory.error("Invalid key ID", 400);
+      }
+
+      const success = await TestimonialService.deleteKey(keyId);
+
+      if (!success) {
+        return ResponseFactory.error("Key not found", 404);
+      }
+
+      return ResponseFactory.redirect("/dashboard/testimonials");
+    } catch (error) {
+      console.error("Delete key error:", error);
+      return ResponseFactory.error("An error occurred while deleting key");
     }
   }
 }
