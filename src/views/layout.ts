@@ -144,6 +144,12 @@ export function renderLayout(data: LayoutData): string {
   <hr>
 
   <footer>
+    <!-- Debug Panel -->
+    <div id="debug-panel" style="background: #f0f0f0; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ccc;">
+      <strong>Debug Info:</strong>
+      <div id="debug-info">Loading...</div>
+    </div>
+
     <p>
       <strong>Follow us:</strong>
       <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a> |
@@ -160,44 +166,66 @@ export function renderLayout(data: LayoutData): string {
       <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <button id="style-toggle" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;padding:0;font:inherit;">Enable Styles</button></small>
     </p>
     <script>
-      // Update toggle button and attach click handler
+      // Debug and toggle functionality
       (function() {
+        const debugInfo = document.getElementById('debug-info');
         const styleToggle = document.getElementById('style-toggle');
-        const currentStyleState = localStorage.getItem('useStyles') === 'true';
-        console.log('[Style Toggle] Footer script running. Current state:', currentStyleState);
 
-        // Update button text
-        if (currentStyleState) {
-          styleToggle.textContent = 'Disable Styles';
-          console.log('[Style Toggle] Updated button text to "Disable Styles"');
-        } else {
-          console.log('[Style Toggle] Button text remains "Enable Styles"');
+        // Test 1: Is JavaScript running?
+        debugInfo.innerHTML = '✓ JavaScript is running<br>';
+
+        // Test 2: Is localStorage available?
+        try {
+          const test = localStorage.getItem('test');
+          debugInfo.innerHTML += '✓ localStorage is available<br>';
+        } catch (e) {
+          debugInfo.innerHTML += '✗ localStorage error: ' + e.message + '<br>';
         }
 
-        // Attach click handler
+        // Test 3: What's the current state?
+        const currentState = localStorage.getItem('useStyles');
+        debugInfo.innerHTML += 'Current useStyles value: ' + currentState + '<br>';
+
+        // Test 4: Can we find the button?
+        if (styleToggle) {
+          debugInfo.innerHTML += '✓ Button found<br>';
+        } else {
+          debugInfo.innerHTML += '✗ Button NOT found<br>';
+          return;
+        }
+
+        // Update button text based on state
+        if (currentState === 'true') {
+          styleToggle.textContent = 'Disable Styles';
+          debugInfo.innerHTML += 'Button text set to: Disable Styles<br>';
+        } else {
+          debugInfo.innerHTML += 'Button text set to: Enable Styles<br>';
+        }
+
+        // Test 5: Attach click handler
         styleToggle.addEventListener('click', function(e) {
           e.preventDefault();
-          console.log('[Style Toggle] Button clicked');
+          debugInfo.innerHTML += '<strong>BUTTON CLICKED!</strong><br>';
 
           const current = localStorage.getItem('useStyles') === 'true';
           const newState = !current;
 
-          // Change button text immediately for visual feedback
-          styleToggle.textContent = newState ? 'Loading styles...' : 'Removing styles...';
+          debugInfo.innerHTML += 'Toggling from ' + current + ' to ' + newState + '<br>';
 
           try {
             localStorage.setItem('useStyles', String(newState));
-            console.log('[Style Toggle] Saved:', newState);
+            debugInfo.innerHTML += '✓ Saved to localStorage<br>';
+            debugInfo.innerHTML += 'Reloading in 2 seconds...<br>';
 
-            // Reload after a brief delay
             setTimeout(function() {
               location.reload();
-            }, 100);
+            }, 2000);
           } catch (error) {
-            styleToggle.textContent = 'Error: ' + error.message;
-            console.error('[Style Toggle] Error:', error);
+            debugInfo.innerHTML += '✗ Error: ' + error.message + '<br>';
           }
         });
+
+        debugInfo.innerHTML += '✓ Click handler attached<br>';
       })();
     </script>
   </footer>
