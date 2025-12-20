@@ -80,6 +80,29 @@ export function renderLayout(data: LayoutData): string {
 
   <!-- Stripe (only on donate page, moved conditionally) -->
   ${activeNav === "donate" ? '<script async src="https://js.stripe.com/v3/buy-button.js"></script>' : ""}
+
+  <!-- Optional styling toggle -->
+  <script>
+    // Check if user has enabled styling
+    const useStyles = localStorage.getItem('useStyles') === 'true';
+
+    // Apply styles if enabled
+    if (useStyles) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css';
+      link.id = 'optional-styles';
+      document.head.appendChild(link);
+    }
+
+    // Toggle function
+    function toggleStyles() {
+      const currentState = localStorage.getItem('useStyles') === 'true';
+      const newState = !currentState;
+      localStorage.setItem('useStyles', String(newState));
+      location.reload();
+    }
+  </script>
 </head>
 <body>
   <header>
@@ -119,8 +142,15 @@ export function renderLayout(data: LayoutData): string {
       <a href="/donate">Support our ministry</a>
     </p>
     <p>
-      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></small>
+      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="#" onclick="toggleStyles(); return false;" id="style-toggle">Enable Styles</a></small>
     </p>
+    <script>
+      // Update toggle link text based on current state
+      const styleToggle = document.getElementById('style-toggle');
+      if (localStorage.getItem('useStyles') === 'true') {
+        styleToggle.textContent = 'Disable Styles';
+      }
+    </script>
   </footer>
 </body>
 </html>`;
