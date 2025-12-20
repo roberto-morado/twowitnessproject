@@ -83,40 +83,13 @@ export function renderLayout(data: LayoutData): string {
 
   <!-- Optional styling toggle -->
   <script>
-    // Check if user has enabled styling
-    const useStyles = localStorage.getItem('useStyles') === 'true';
-    console.log('[Style Toggle] Page loaded. useStyles =', useStyles);
-
-    // Apply styles if enabled
-    if (useStyles) {
-      console.log('[Style Toggle] Loading Water.css...');
+    // Load Water.css if user has enabled styling
+    if (localStorage.getItem('useStyles') === 'true') {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css';
-      link.id = 'optional-styles';
       document.head.appendChild(link);
-      console.log('[Style Toggle] Water.css link added to head');
-    } else {
-      console.log('[Style Toggle] Styles disabled, loading semantic HTML only');
     }
-
-    // Toggle function with mobile-friendly feedback
-    window.toggleStyles = function() {
-      console.log('[Style Toggle] Toggle clicked');
-      const currentState = localStorage.getItem('useStyles') === 'true';
-      const newState = !currentState;
-      console.log('[Style Toggle] Current state:', currentState, '→ New state:', newState);
-
-      try {
-        localStorage.setItem('useStyles', String(newState));
-        console.log('[Style Toggle] Saved to localStorage, reloading page...');
-        alert('Styles ' + (newState ? 'enabled' : 'disabled') + '. Page will reload.');
-        location.reload();
-      } catch (error) {
-        alert('Error: ' + error.message);
-        console.error('[Style Toggle] Error:', error);
-      }
-    };
   </script>
 </head>
 <body>
@@ -144,12 +117,6 @@ export function renderLayout(data: LayoutData): string {
   <hr>
 
   <footer>
-    <!-- Debug Panel -->
-    <div id="debug-panel" style="background: #f0f0f0; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ccc;">
-      <strong>Debug Info:</strong>
-      <div id="debug-info">Loading...</div>
-    </div>
-
     <p>
       <strong>Follow us:</strong>
       <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a> |
@@ -166,66 +133,19 @@ export function renderLayout(data: LayoutData): string {
       <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <button id="style-toggle" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;padding:0;font:inherit;">Enable Styles</button></small>
     </p>
     <script>
-      // Debug and toggle functionality
       (function() {
-        const debugInfo = document.getElementById('debug-info');
-        const styleToggle = document.getElementById('style-toggle');
+        const toggle = document.getElementById('style-toggle');
+        const enabled = localStorage.getItem('useStyles') === 'true';
 
-        // Test 1: Is JavaScript running?
-        debugInfo.innerHTML = '✓ JavaScript is running<br>';
+        // Update button text
+        toggle.textContent = enabled ? 'Disable Styles' : 'Enable Styles';
 
-        // Test 2: Is localStorage available?
-        try {
-          const test = localStorage.getItem('test');
-          debugInfo.innerHTML += '✓ localStorage is available<br>';
-        } catch (e) {
-          debugInfo.innerHTML += '✗ localStorage error: ' + e.message + '<br>';
-        }
-
-        // Test 3: What's the current state?
-        const currentState = localStorage.getItem('useStyles');
-        debugInfo.innerHTML += 'Current useStyles value: ' + currentState + '<br>';
-
-        // Test 4: Can we find the button?
-        if (styleToggle) {
-          debugInfo.innerHTML += '✓ Button found<br>';
-        } else {
-          debugInfo.innerHTML += '✗ Button NOT found<br>';
-          return;
-        }
-
-        // Update button text based on state
-        if (currentState === 'true') {
-          styleToggle.textContent = 'Disable Styles';
-          debugInfo.innerHTML += 'Button text set to: Disable Styles<br>';
-        } else {
-          debugInfo.innerHTML += 'Button text set to: Enable Styles<br>';
-        }
-
-        // Test 5: Attach click handler
-        styleToggle.addEventListener('click', function(e) {
+        // Toggle handler
+        toggle.addEventListener('click', function(e) {
           e.preventDefault();
-          debugInfo.innerHTML += '<strong>BUTTON CLICKED!</strong><br>';
-
-          const current = localStorage.getItem('useStyles') === 'true';
-          const newState = !current;
-
-          debugInfo.innerHTML += 'Toggling from ' + current + ' to ' + newState + '<br>';
-
-          try {
-            localStorage.setItem('useStyles', String(newState));
-            debugInfo.innerHTML += '✓ Saved to localStorage<br>';
-            debugInfo.innerHTML += 'Reloading in 2 seconds...<br>';
-
-            setTimeout(function() {
-              location.reload();
-            }, 2000);
-          } catch (error) {
-            debugInfo.innerHTML += '✗ Error: ' + error.message + '<br>';
-          }
+          localStorage.setItem('useStyles', String(!enabled));
+          location.reload();
         });
-
-        debugInfo.innerHTML += '✓ Click handler attached<br>';
       })();
     </script>
   </footer>
