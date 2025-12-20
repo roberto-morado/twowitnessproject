@@ -76,12 +76,12 @@ export const securityHeadersMiddleware: MiddlewareFunction = async (
   if (response) {
     const headers = new Headers(response.headers);
 
-    // Content Security Policy - Allow Stripe and YouTube thumbnails
-    // Note: No style-src needed (zero CSS approach)
+    // Content Security Policy - Allow Stripe, YouTube thumbnails, and optional styling
     headers.set(
       "Content-Security-Policy",
       "default-src 'self'; " +
-      "script-src 'self' https://js.stripe.com; " +
+      "script-src 'self' 'unsafe-inline' https://js.stripe.com; " +
+      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
       "frame-src https://js.stripe.com; " +
       "connect-src 'self' https://api.stripe.com; " +
       "img-src 'self' data: https://i.ytimg.com;"
