@@ -21,7 +21,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Watch our evangelism videos, testimonials, and ministry updates. Subscribe to see our latest adventures in spreading the Gospel.
+          Watch our evangelism livestreams and video content. Subscribe to catch us live as we share the Gospel across the nation.
         </p>
       </div>
 
@@ -32,7 +32,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Daily photos and stories from the road. See where we are, what we're doing, and join us in real-time.
+          Short-form clips from our livestreams and personal encounters captured with our Meta glasses. Follow for daily Gospel moments and behind-the-scenes ministry life.
         </p>
       </div>
 
@@ -43,7 +43,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Reflections, devotionals, and ministry updates. Read our thoughts and experiences as we travel.
+          Written updates, reflections, and ministry news. Our journalistic outlet for sharing thoughts, experiences, and resources as we travel.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Short-form content, street preaching clips, and quick testimonies. Follow for bite-sized Gospel moments.
+          Engaging short videos from our livestreams and personal encounters with our Meta glasses. Quick, impactful Gospel content for the TikTok community.
         </p>
       </div>
     </section>
