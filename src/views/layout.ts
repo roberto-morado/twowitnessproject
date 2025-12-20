@@ -85,21 +85,29 @@ export function renderLayout(data: LayoutData): string {
   <script>
     // Check if user has enabled styling
     const useStyles = localStorage.getItem('useStyles') === 'true';
+    console.log('[Style Toggle] Page loaded. useStyles =', useStyles);
 
     // Apply styles if enabled
     if (useStyles) {
+      console.log('[Style Toggle] Loading Water.css...');
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css';
       link.id = 'optional-styles';
       document.head.appendChild(link);
+      console.log('[Style Toggle] Water.css link added to head');
+    } else {
+      console.log('[Style Toggle] Styles disabled, loading semantic HTML only');
     }
 
     // Toggle function
     function toggleStyles() {
+      console.log('[Style Toggle] Toggle clicked');
       const currentState = localStorage.getItem('useStyles') === 'true';
       const newState = !currentState;
+      console.log('[Style Toggle] Current state:', currentState, '→ New state:', newState);
       localStorage.setItem('useStyles', String(newState));
+      console.log('[Style Toggle] Saved to localStorage, reloading page...');
       location.reload();
     }
   </script>
@@ -147,8 +155,13 @@ export function renderLayout(data: LayoutData): string {
     <script>
       // Update toggle link text based on current state
       const styleToggle = document.getElementById('style-toggle');
-      if (localStorage.getItem('useStyles') === 'true') {
+      const currentStyleState = localStorage.getItem('useStyles') === 'true';
+      console.log('[Style Toggle] Footer script running. Current state:', currentStyleState);
+      if (currentStyleState) {
         styleToggle.textContent = 'Disable Styles';
+        console.log('[Style Toggle] Updated link text to "Disable Styles"');
+      } else {
+        console.log('[Style Toggle] Link text remains "Enable Styles"');
       }
     </script>
   </footer>
