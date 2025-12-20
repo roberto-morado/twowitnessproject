@@ -157,19 +157,48 @@ export function renderLayout(data: LayoutData): string {
       <a href="/donate">Support our ministry</a>
     </p>
     <p>
-      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="#" onclick="toggleStyles(); return false;" id="style-toggle">Enable Styles</a></small>
+      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <button id="style-toggle" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;padding:0;font:inherit;">Enable Styles</button></small>
     </p>
     <script>
-      // Update toggle link text based on current state
-      const styleToggle = document.getElementById('style-toggle');
-      const currentStyleState = localStorage.getItem('useStyles') === 'true';
-      console.log('[Style Toggle] Footer script running. Current state:', currentStyleState);
-      if (currentStyleState) {
-        styleToggle.textContent = 'Disable Styles';
-        console.log('[Style Toggle] Updated link text to "Disable Styles"');
-      } else {
-        console.log('[Style Toggle] Link text remains "Enable Styles"');
-      }
+      // Update toggle button and attach click handler
+      (function() {
+        const styleToggle = document.getElementById('style-toggle');
+        const currentStyleState = localStorage.getItem('useStyles') === 'true';
+        console.log('[Style Toggle] Footer script running. Current state:', currentStyleState);
+
+        // Update button text
+        if (currentStyleState) {
+          styleToggle.textContent = 'Disable Styles';
+          console.log('[Style Toggle] Updated button text to "Disable Styles"');
+        } else {
+          console.log('[Style Toggle] Button text remains "Enable Styles"');
+        }
+
+        // Attach click handler
+        styleToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('[Style Toggle] Button clicked');
+
+          const current = localStorage.getItem('useStyles') === 'true';
+          const newState = !current;
+
+          // Change button text immediately for visual feedback
+          styleToggle.textContent = newState ? 'Loading styles...' : 'Removing styles...';
+
+          try {
+            localStorage.setItem('useStyles', String(newState));
+            console.log('[Style Toggle] Saved:', newState);
+
+            // Reload after a brief delay
+            setTimeout(function() {
+              location.reload();
+            }, 100);
+          } catch (error) {
+            styleToggle.textContent = 'Error: ' + error.message;
+            console.error('[Style Toggle] Error:', error);
+          }
+        });
+      })();
     </script>
   </footer>
 </body>
