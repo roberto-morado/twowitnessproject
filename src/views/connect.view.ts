@@ -9,7 +9,7 @@ import { AppConfig } from "@config/app.config.ts";
 export function renderConnect(): string {
   const content = `
     <h1>🌐 Connect With Us</h1>
-    <p>Stay connected with our ministry across multiple platforms. Each platform serves a unique purpose in sharing our journey and building community.</p>
+    <p>Follow our ministry journey and stay connected with us on social media.</p>
 
     <section>
       <h2>Follow Our Journey</h2>
@@ -21,7 +21,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Watch our evangelism livestreams and video content. Subscribe to catch us live as we share the Gospel across the nation.
+          Watch our evangelism encounters and ministry videos as we share the Gospel across the nation.
         </p>
       </div>
 
@@ -32,7 +32,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Short-form clips from our livestreams and personal encounters captured with our Meta glasses. Follow for daily Gospel moments and behind-the-scenes ministry life.
+          Daily Gospel moments and personal encounters with people. Follow for real, unfiltered ministry life on the road.
         </p>
       </div>
 
@@ -43,7 +43,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Written updates, reflections, and ministry news. Our journalistic outlet for sharing thoughts, experiences, and resources as we travel.
+          Written updates, reflections, and testimonies from the road. Read about what God is doing in our ministry.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export function renderConnect(): string {
           </a>
         </h3>
         <p style="margin-left: 2rem; color: #555;">
-          Engaging short videos from our livestreams and personal encounters with our Meta glasses. Quick, impactful Gospel content for the TikTok community.
+          Short videos of Gospel moments and street ministry encounters from our journey.
         </p>
       </div>
     </section>
