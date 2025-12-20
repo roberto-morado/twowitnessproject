@@ -337,6 +337,14 @@ export class TestimonialController implements Controller {
     }
 
     try {
+      const formData = await request.formData();
+
+      // Validate CSRF token
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        return ResponseFactory.error("Invalid security token", 403);
+      }
+
       const testimonialId = params?.["0"];
       if (!testimonialId) {
         return ResponseFactory.error("Invalid testimonial ID", 400);
@@ -377,6 +385,14 @@ export class TestimonialController implements Controller {
     }
 
     try {
+      const formData = await request.formData();
+
+      // Validate CSRF token
+      const csrfValid = await CsrfService.validateFromRequest(request, formData);
+      if (!csrfValid) {
+        return ResponseFactory.error("Invalid security token", 403);
+      }
+
       const testimonialId = params?.["0"];
       if (!testimonialId) {
         return ResponseFactory.error("Invalid testimonial ID", 400);

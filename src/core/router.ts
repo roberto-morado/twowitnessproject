@@ -121,7 +121,17 @@ export class Router {
       // RegExp pattern
       const match = pathname.match(pattern);
       if (match) {
-        return { ...match.groups };
+        // Return both named groups and numbered capture groups
+        const params: Record<string, string> = { ...match.groups };
+
+        // Add numbered capture groups (match[1], match[2], etc.)
+        for (let i = 1; i < match.length; i++) {
+          if (match[i] !== undefined) {
+            params[String(i - 1)] = match[i]; // 0-indexed for capture groups
+          }
+        }
+
+        return params;
       }
     }
 
