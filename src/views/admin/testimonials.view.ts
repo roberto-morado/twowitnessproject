@@ -73,13 +73,15 @@ export function renderAdminTestimonials(data: AdminTestimonialsViewData): string
                 </div>
                 <div>
                   ${!testimonial.approved ? `
-                    <form method="POST" action="/dashboard/testimonials/${testimonial.id}/approve">
+                    <form method="POST" action="/dashboard/testimonials/${escapeHtml(testimonial.id)}/approve">
+                      ${csrfToken ? CsrfService.generateTokenInput(csrfToken) : ""}
                       <button type="submit">
                         ✓ Approve
                       </button>
                     </form>
                   ` : ""}
-                  <form method="POST" action="/dashboard/testimonials/${testimonial.id}/delete" onsubmit="return confirm('Delete this testimonial?');">
+                  <form method="POST" action="/dashboard/testimonials/${escapeHtml(testimonial.id)}/delete" onsubmit="return confirm('Delete this testimonial?');">
+                    ${csrfToken ? CsrfService.generateTokenInput(csrfToken) : ""}
                     <button type="submit">
                       Delete
                     </button>
