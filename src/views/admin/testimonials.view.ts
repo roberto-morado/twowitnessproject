@@ -175,8 +175,18 @@ export function renderAdminTestimonials(data: AdminTestimonialsViewData): string
                     ` : ""}
                   </div>
 
-                  ${!key.used && !isExpired ? `
-                    <div>
+                  <div>
+                    <form method="POST" action="/dashboard/testimonials/keys/${escapeHtml(key.id)}/delete" onsubmit="return confirm('Delete this key? This action cannot be undone.');" style="margin-top: 0.5rem;">
+                      ${csrfToken ? CsrfService.generateTokenInput(csrfToken) : ""}
+                      <button type="submit" style="background: #dc2626; color: white; padding: 0.5rem 1rem; border: none; cursor: pointer; border-radius: 4px;">
+                        🗑️ Delete Key
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                ${!key.used && !isExpired ? `
+                  <div>
                       <div>
                         <strong>Submission URL:</strong>
                         <div>

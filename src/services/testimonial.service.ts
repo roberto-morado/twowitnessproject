@@ -208,6 +208,19 @@ export class TestimonialService {
   }
 
   /**
+   * Delete a testimonial submission key
+   */
+  static async deleteKey(keyId: string): Promise<boolean> {
+    const key = await db.get<TestimonialKey>(KvKeys.testimonialKey(keyId));
+    if (!key) {
+      return false;
+    }
+
+    await db.delete(KvKeys.testimonialKey(keyId));
+    return true;
+  }
+
+  /**
    * Get testimonials with pagination
    */
   static async getTestimonialsPage(
