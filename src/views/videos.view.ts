@@ -21,29 +21,9 @@ export function renderVideos(data: VideosViewData = { videos: [] }): string {
     <section>
       <p>
         We document our evangelism encounters and life on the road to share with you
-        the amazing ways God is working. Check out our latest videos below, or follow
-        us on social media to see new content as soon as it's posted.
+        the amazing ways God is working. Check out our latest videos below, or
+        <a href="/connect">visit our Connect page</a> to follow us on social media.
       </p>
-    </section>
-
-    <section>
-      <h2>Find Us On</h2>
-      <dl>
-        <dt><a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">▶️ YouTube</a></dt>
-        <dd>Full-length videos and vlogs</dd>
-
-        <dt><a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">📷 Instagram</a></dt>
-        <dd>Daily updates and stories</dd>
-
-        <dt><a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">💬 Discord</a></dt>
-        <dd>Join our community server</dd>
-
-        <dt><a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener">🎵 TikTok</a></dt>
-        <dd>Short clips and highlights</dd>
-
-        <dt><a href="${AppConfig.socialMedia.threads}" target="_blank" rel="noopener">🧵 Threads</a></dt>
-        <dd>Updates and conversations</dd>
-      </dl>
     </section>
 
     <section>
@@ -77,8 +57,8 @@ export function renderVideos(data: VideosViewData = { videos: [] }): string {
     <section>
       <h2>Want to Stay Updated?</h2>
       <p>
-        Follow us on your favorite platform to never miss a video. We post regularly
-        about our encounters, testimonies, and life on the road serving Jesus.
+        <a href="/connect">Connect with us on social media</a> to never miss a video.
+        We post regularly about our encounters, testimonies, and life on the road serving Jesus.
       </p>
     </section>
   `;
