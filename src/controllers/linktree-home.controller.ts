@@ -3,7 +3,7 @@
  * Displays public homepage with links
  */
 
-import type { Controller, Route } from "../core/router.ts";
+import type { Controller, Route } from "@core/types.ts";
 import { ResponseFactory } from "../core/response.ts";
 import { LinkService } from "../services/link.service.ts";
 import { renderLinktreeHome } from "../views/linktree-home.view.ts";
