@@ -1,0 +1,13 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-read --allow-env --allow-write --unstable-kv main.ts",
+    "dev": "deno run --allow-net --allow-read --allow-env --allow-write --unstable-kv --watch main.ts"
+  },
+  "imports": {
+    "@/": "./src/"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.window", "deno.unstable"]
+  }
+}
