@@ -1,5 +1,5 @@
 /**
- * Home View
+ * Home View - Redesigned
  */
 
 import { AppConfig } from "@config/app.config.ts";
@@ -17,78 +17,120 @@ export interface HomeViewData {
 export function renderHome(data: HomeViewData = {}): string {
   const { testimonials = [], currentLocation } = data;
   const content = `
-    <header>
-      <h1>${AppConfig.ministry.name}</h1>
-      <p><strong>${AppConfig.ministry.tagline}</strong></p>
-      <p>${AppConfig.ministry.description}</p>
+    <!-- Hero Section -->
+    <header class="text-center">
+      <h1>${AppConfig.ministry.tagline}</h1>
+      <p style="font-size: 1.25rem; color: var(--color-text-light); margin-bottom: 2rem;">
+        ${AppConfig.ministry.description}
+      </p>
       ${currentLocation !== undefined ? renderCurrentLocationBadge(currentLocation) : ""}
-      <nav>
-        <a href="/about">Learn More</a> |
-        <a href="/donate">Support Us</a>
+      <nav style="margin-top: 2rem;">
+        <a href="/pray" class="btn">🙏 Pray With Us</a>
+        <a href="/donate" class="btn btn-secondary">❤️ Support Our Ministry</a>
       </nav>
     </header>
 
+    <!-- Who We Are -->
     <section>
-      <h2>Our Ministry</h2>
-      <dl>
-        <dt>🚐 Life on the Road</dt>
-        <dd>We've transformed a van into our home, allowing us to travel wherever God calls us to share His word.</dd>
+      <h2>Who We Are</h2>
+      <p>
+        We're two friends who answered God's unmistakable call to leave everything behind and dedicate our lives to sharing the Gospel.
+        We sold our belongings, bought a van, and transformed it into our home on wheels. Now we travel from city to city,
+        meeting people where they are and sharing the life-changing message of Jesus Christ.
+      </p>
+      <p>
+        Our name comes from Revelation 11:3—"And I will appoint my two witnesses, and they will prophesy for 1,260 days,
+        clothed in sackcloth." This is not a temporary mission or a phase. This is our calling until the day God calls us home.
+      </p>
+    </section>
 
+    <!-- What We Do -->
+    <section>
+      <h2>What We Do</h2>
+      <dl>
         <dt>📖 Street Evangelism</dt>
-        <dd>Meeting people where they are, sharing the Gospel in cities and towns across the nation.</dd>
+        <dd>Meeting people face-to-face in cities across America, sharing the Gospel through genuine conversations and bold proclamation.</dd>
+
+        <dt>🙏 Prayer & Ministry</dt>
+        <dd>Praying for those we meet who are hurting, lost, or seeking hope. Every encounter matters.</dd>
 
         <dt>🎥 Documenting the Journey</dt>
-        <dd>Sharing our experiences and encounters through videos on social media to inspire others.</dd>
+        <dd>Sharing our experiences on social media to inspire others and show how God moves through ordinary people.</dd>
 
-        <dt>🙏 Faith in Action</dt>
-        <dd>Living by faith, trusting God to provide as we dedicate our lives to His service.</dd>
+        <dt>🚐 Living by Faith</dt>
+        <dd>Trusting God daily for provision as we live simply in our van, going wherever He leads us.</dd>
       </dl>
     </section>
 
-    <section>
-      <h2>🙏 We'd Love to Pray for You</h2>
+    <!-- Prayer Section -->
+    <section style="background: linear-gradient(135deg, #E74C3C 0%, #F39C12 100%); color: white; text-align: center;">
+      <h2 style="color: white; border-bottom: 2px solid white;">🙏 We'd Love to Pray for You</h2>
       <p>
         As we travel this journey, one of our greatest privileges is lifting others up in prayer.
         Whether you're facing a challenge, celebrating a blessing, or simply need someone to stand
         with you in faith—we're here for you.
       </p>
       <p>
-        You can share your prayer request anonymously or include your name. Choose to make it public
-        so our community can pray with you, or keep it private between you and God. Every request
-        matters, and we take each one seriously.
+        Share your prayer request anonymously or with your name. Make it public so our community can pray with you,
+        or keep it private between you and God.
       </p>
-      <nav>
-        <a href="/pray">Submit a Prayer Request</a> |
-        <a href="/prayers">View Community Prayers</a>
+      <nav style="margin-top: 1.5rem;">
+        <a href="/pray" class="btn" style="background: white; color: var(--color-primary);">Submit a Prayer Request</a>
+        <a href="/prayers" class="btn-secondary" style="background: var(--color-secondary); color: white;">View Community Prayers</a>
       </nav>
     </section>
 
     ${testimonials.length > 0 ? `
+    <!-- Testimonials -->
     <section>
       <h2>✨ Stories of Faith</h2>
-      <p>Hear from those who have encountered God's love through our ministry</p>
+      <p style="text-align: center; font-size: 1.1rem;">Hear from those who have encountered God's love through our ministry</p>
 
       ${testimonials.slice(0, 3).map(testimonial => `
         <article>
           <h3>${escapeHtml(testimonial.name)}${testimonial.location ? ` • ${escapeHtml(testimonial.location)}` : ""}</h3>
           <blockquote>
-            ${escapeHtml(testimonial.testimony.substring(0, 300))}${testimonial.testimony.length > 300 ? '...' : ''}
+            "${escapeHtml(testimonial.testimony.substring(0, 250))}${testimonial.testimony.length > 250 ? '...' : ''}"
           </blockquote>
         </article>
       `).join("")}
 
-      <p><a href="/testimonials">Read More Testimonials</a></p>
+      <p style="text-align: center; margin-top: 2rem;">
+        <a href="/testimonials" class="btn">Read More Testimonials →</a>
+      </p>
     </section>
     ` : ""}
 
-    <section>
+    <!-- Connect & Support -->
+    <section style="text-align: center; background: var(--color-bg-alt);">
       <h2>Join Us on This Journey</h2>
-      <p>Follow our ministry on social media and see where God leads us next</p>
-      <ul>
-        <li><a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener">YouTube</a></li>
-        <li><a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener">Instagram</a></li>
-        <li><a href="${AppConfig.socialMedia.discord}" target="_blank" rel="noopener">Discord</a></li>
-      </ul>
+      <p style="font-size: 1.1rem;">
+        Follow our ministry on social media and see where God leads us next.
+        Watch our encounters, behind-the-scenes moments, and daily life on the road.
+      </p>
+      <nav style="margin-top: 1.5rem;">
+        <a href="${AppConfig.socialMedia.youtube}" target="_blank" rel="noopener" class="btn">📺 YouTube</a>
+        <a href="${AppConfig.socialMedia.instagram}" target="_blank" rel="noopener" class="btn">📷 Instagram</a>
+        <a href="${AppConfig.socialMedia.tiktok}" target="_blank" rel="noopener" class="btn">🎵 TikTok</a>
+      </nav>
+      <p style="margin-top: 2rem;">
+        <a href="/connect">View all our social media →</a>
+      </p>
+    </section>
+
+    <!-- Support CTA -->
+    <section style="background: var(--color-secondary); color: white; text-align: center;">
+      <h2 style="color: white; border-bottom: 2px solid var(--color-accent);">Support Our Ministry</h2>
+      <p style="font-size: 1.1rem;">
+        We live by faith, trusting God to provide through the generosity of supporters like you.
+        Your donation helps us continue traveling, sharing the Gospel, and reaching more people with the message of Jesus.
+      </p>
+      <nav style="margin-top: 1.5rem;">
+        <a href="/donate" class="btn" style="background: var(--color-primary); color: white; font-size: 1.25rem; padding: 1rem 2rem;">❤️ Donate Now</a>
+      </nav>
+      <p style="margin-top: 1rem; opacity: 0.9;">
+        Every gift, no matter the size, makes an eternal difference.
+      </p>
     </section>
   `;
 
