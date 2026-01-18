@@ -1,8 +1,0 @@
-{
-  "name": "twowitnessproject",
-  "description": "Two Witness Project ministry website - Spreading the Gospel across the nation",
-  "entrypoint": "main.ts",
-  "env": {
-    "DENO_ENV": "production"
-  }
-}
