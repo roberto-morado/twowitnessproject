@@ -1,10 +1,9 @@
 /**
  * Middleware system for request/response processing
- * Follows Chain of Responsibility pattern
+ * Minimal middleware for Linktree-style site
  */
 
 import { AuthService } from "../services/auth.service.ts";
-import { AnalyticsService } from "../services/analytics.service.ts";
 
 export type MiddlewareFunction = (
   request: Request,
@@ -76,15 +75,13 @@ export const securityHeadersMiddleware: MiddlewareFunction = async (
   if (response) {
     const headers = new Headers(response.headers);
 
-    // Content Security Policy - Allow Stripe, YouTube thumbnails, and optional styling
+    // Content Security Policy - Simple policy for Linktree site
     headers.set(
       "Content-Security-Policy",
       "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com; " +
-      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
-      "frame-src https://js.stripe.com; " +
-      "connect-src 'self' https://api.stripe.com; " +
-      "img-src 'self' data: https://i.ytimg.com;"
+      "script-src 'self' 'unsafe-inline'; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "img-src 'self' data:;"
     );
 
     // Other security headers
@@ -147,65 +144,26 @@ export const requireAuthMiddleware: MiddlewareFunction = async (
 };
 
 /**
- * Analytics Tracking Middleware
- * Tracks page views for analytics (skips admin routes)
- */
-export const analyticsMiddleware: MiddlewareFunction = async (
-  request,
-  context
-) => {
-  const url = new URL(request.url);
-
-  // Don't track admin routes or login
-  const skipPaths = ["/login", "/dashboard"];
-  const shouldTrack = !skipPaths.some(path => url.pathname.startsWith(path));
-
-  if (shouldTrack && request.method === "GET") {
-    // Store analytics data in context for later processing
-    context.data.set("trackPageView", {
-      path: url.pathname,
-      referrer: request.headers.get("Referer") || null,
-      userAgent: request.headers.get("User-Agent") || null,
-      timestamp: Date.now(),
-    });
-  }
-
-  const response = await context.next();
-
-  // After response is generated, save analytics asynchronously (don't await to avoid blocking)
-  if (shouldTrack && context.data.has("trackPageView")) {
-    const analyticsData = context.data.get("trackPageView") as {
-      path: string;
-      referrer: string | null;
-      userAgent: string | null;
-    };
-
-    // Get IP from connection info (if available)
-    const ip = request.headers.get("X-Forwarded-For")?.split(",")[0].trim() ||
-               request.headers.get("X-Real-IP") ||
-               null;
-
-    // Save analytics in background (don't block response)
-    AnalyticsService.trackPageView(
-      analyticsData.path,
-      analyticsData.referrer,
-      analyticsData.userAgent,
-      ip
-    ).catch(err => console.error("Analytics tracking error:", err));
-  }
-
-  return response;
-};
-
-/**
  * Cache Headers Middleware for static files
- * Note: No longer needed with zero CSS approach (no static files)
- * Keeping for potential future use (e.g., robots.txt, sitemap.xml)
  */
 export const cacheHeadersMiddleware: MiddlewareFunction = async (
   request,
   context
 ) => {
-  // No static files to cache in zero-CSS approach
-  return await context.next();
+  const url = new URL(request.url);
+  const response = await context.next();
+
+  // Add cache headers for static files
+  if (response && url.pathname.startsWith("/css/")) {
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "public, max-age=3600"); // 1 hour
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  }
+
+  return response;
 };
