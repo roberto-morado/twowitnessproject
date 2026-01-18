@@ -25,9 +25,9 @@ export function render404(): string {
         <nav>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/about">About Our Ministry</a></li>
-            <li><a href="/videos">Videos</a></li>
+            <li><a href="/connect">Connect With Us</a></li>
             <li><a href="/donate">Support Us</a></li>
+            <li><a href="/testimonials">Testimonials</a></li>
             <li><a href="/pray">Submit Prayer Request</a></li>
             <li><a href="/prayers">View Public Prayers</a></li>
           </ul>

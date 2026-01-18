@@ -31,8 +31,6 @@ import {
 
 // Import controllers
 import { HomeController } from "./src/controllers/home.controller.ts";
-import { AboutController } from "./src/controllers/about.controller.ts";
-import { VideosController } from "./src/controllers/videos.controller.ts";
 import { DonateController } from "./src/controllers/donate.controller.ts";
 import { AuthController } from "./src/controllers/auth.controller.ts";
 import { PrayerController } from "./src/controllers/prayer.controller.ts";
@@ -41,7 +39,6 @@ import { SEOController } from "./src/controllers/seo.controller.ts";
 import { PrivacyController } from "./src/controllers/privacy.controller.ts";
 import { SettingsController } from "./src/controllers/settings.controller.ts";
 import { TestimonialController } from "./src/controllers/testimonial.controller.ts";
-import { MapController } from "./src/controllers/map.controller.ts";
 import { LocationDashboardController } from "./src/controllers/location-dashboard.controller.ts";
 import { ConnectController } from "./src/controllers/connect.controller.ts";
 
@@ -66,13 +63,10 @@ async function bootstrap(): Promise<Router> {
 
   // Register controllers (Dependency Injection)
   router.registerController(new HomeController());
-  router.registerController(new AboutController());
-  router.registerController(new VideosController());
   router.registerController(new DonateController());
   router.registerController(new AuthController());
   router.registerController(new PrayerController());
   router.registerController(new TestimonialController());
-  router.registerController(new MapController());
   router.registerController(new LocationDashboardController());
   router.registerController(new ConnectController());
   router.registerController(new AnalyticsController());

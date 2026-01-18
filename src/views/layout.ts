@@ -53,6 +53,9 @@ export function renderLayout(data: LayoutData): string {
   <!-- Favicon -->
   <link rel="icon" href="${faviconSvg}">
 
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="${ogType}">
   <meta property="og:title" content="${ogTitle}">
@@ -80,17 +83,6 @@ export function renderLayout(data: LayoutData): string {
 
   <!-- Stripe (only on donate page, moved conditionally) -->
   ${activeNav === "donate" ? '<script async src="https://js.stripe.com/v3/buy-button.js"></script>' : ""}
-
-  <!-- Optional styling toggle -->
-  <script>
-    // Load Water.css if user has enabled styling
-    if (localStorage.getItem('useStyles') === 'true') {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css';
-      document.head.appendChild(link);
-    }
-  </script>
 </head>
 <body>
   <header>
@@ -99,12 +91,8 @@ export function renderLayout(data: LayoutData): string {
   </header>
 
   <nav>
-    <a href="/" ${activeNav === "home" ? 'aria-current="page"' : ""}>Home</a> |
-    <a href="/about" ${activeNav === "about" ? 'aria-current="page"' : ""}>About</a> |
-    <a href="/map" ${activeNav === "map" ? 'aria-current="page"' : ""}>Map</a> |
-    <a href="/videos" ${activeNav === "videos" ? 'aria-current="page"' : ""}>Videos</a> |
-    <a href="/testimonials" ${activeNav === "testimonials" ? 'aria-current="page"' : ""}>Testimonials</a> |
-    <a href="/connect" ${activeNav === "connect" ? 'aria-current="page"' : ""}>Connect</a> |
+    <a href="/" ${activeNav === "home" ? 'aria-current="page"' : ""}>Home</a>
+    <a href="/connect" ${activeNav === "connect" ? 'aria-current="page"' : ""}>Connect</a>
     <a href="/donate" ${activeNav === "donate" ? 'aria-current="page"' : ""}>Donate</a>
   </nav>
 
@@ -130,24 +118,8 @@ export function renderLayout(data: LayoutData): string {
       <a href="/donate">Support our ministry</a>
     </p>
     <p>
-      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="#" id="style-toggle">Enable Styles</a></small>
+      <small>&copy; ${new Date().getFullYear()} ${AppConfig.ministry.name}. All rights reserved. | <a href="/privacy">Privacy Policy</a></small>
     </p>
-    <script>
-      (function() {
-        const toggle = document.getElementById('style-toggle');
-        const enabled = localStorage.getItem('useStyles') === 'true';
-
-        // Update link text
-        toggle.textContent = enabled ? 'Disable Styles' : 'Enable Styles';
-
-        // Toggle handler
-        toggle.addEventListener('click', function(e) {
-          e.preventDefault();
-          localStorage.setItem('useStyles', String(!enabled));
-          location.reload();
-        });
-      })();
-    </script>
   </footer>
 </body>
 </html>`;
