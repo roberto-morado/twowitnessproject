@@ -3,8 +3,8 @@
  * Main admin dashboard
  */
 
-import type { Controller, Route } from "../core/router.ts";
-import { ResponseFactory } from "../core/response.ts";
+import type { Controller, Route } from "@core/types.ts";
+import { ResponseFactory } from "@core/response.ts";
 import { AuthService } from "../services/auth.service.ts";
 import { renderSimpleDashboard } from "../views/admin/dashboard.view.ts";
 
@@ -20,8 +20,15 @@ export class DashboardController implements Controller {
   }
 
   private async showDashboard(request: Request): Promise<Response> {
-    const session = await AuthService.getSessionFromRequest(request);
-    if (!session) {
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+    if (!username) {
       return ResponseFactory.redirect("/login");
     }
 

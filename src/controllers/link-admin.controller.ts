@@ -3,8 +3,8 @@
  * Handles CRUD operations for links in admin dashboard
  */
 
-import type { Controller, Route } from "../core/router.ts";
-import { ResponseFactory } from "../core/response.ts";
+import type { Controller, Route } from "@core/types.ts";
+import { ResponseFactory } from "@core/response.ts";
 import { LinkService } from "../services/link.service.ts";
 import { AuthService } from "../services/auth.service.ts";
 import { CsrfService } from "../services/csrf.service.ts";
@@ -40,13 +40,20 @@ export class LinkAdminController implements Controller {
    * Show links management page
    */
   private async showLinksAdmin(request: Request): Promise<Response> {
-    const session = await AuthService.getSessionFromRequest(request);
-    if (!session) {
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+    if (!username) {
       return ResponseFactory.redirect("/login");
     }
 
     const links = await LinkService.getAllLinks(true); // Include inactive
-    const csrfToken = await CsrfService.generateToken(session.id);
+    const csrfToken = CsrfService.generateToken();
 
     const html = renderAdminLinks({ links, csrfToken });
     return ResponseFactory.html(html);
@@ -56,8 +63,15 @@ export class LinkAdminController implements Controller {
    * Create a new link
    */
   private async createLink(request: Request, params?: Record<string, string>): Promise<Response> {
-    const session = await AuthService.getSessionFromRequest(request);
-    if (!session) {
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+    if (!username) {
       return ResponseFactory.redirect("/login");
     }
 
@@ -99,8 +113,15 @@ export class LinkAdminController implements Controller {
    * Toggle link active/inactive
    */
   private async toggleLink(request: Request, params?: Record<string, string>): Promise<Response> {
-    const session = await AuthService.getSessionFromRequest(request);
-    if (!session) {
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+    if (!username) {
       return ResponseFactory.redirect("/login");
     }
 
@@ -131,8 +152,15 @@ export class LinkAdminController implements Controller {
    * Delete a link
    */
   private async deleteLink(request: Request, params?: Record<string, string>): Promise<Response> {
-    const session = await AuthService.getSessionFromRequest(request);
-    if (!session) {
+    const cookieHeader = request.headers.get("Cookie");
+    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
+
+    if (!sessionId) {
+      return ResponseFactory.redirect("/login");
+    }
+
+    const username = await AuthService.validateSession(sessionId);
+    if (!username) {
       return ResponseFactory.redirect("/login");
     }
 

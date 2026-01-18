@@ -12,15 +12,11 @@ export class LinkService {
    * Get all links (active only for public, all for admin)
    */
   static async getAllLinks(includeInactive = false): Promise<Link[]> {
-    const links: Link[] = [];
-    const entries = db.kv.list<Link>({ prefix: ["links"] });
+    const entries = await db.list<Link>(["links"]);
 
-    for await (const entry of entries) {
-      const link = entry.value;
-      if (includeInactive || link.isActive) {
-        links.push(link);
-      }
-    }
+    const links = entries
+      .map(entry => entry.value)
+      .filter(link => includeInactive || link.isActive);
 
     // Sort by order (ascending)
     return links.sort((a, b) => a.order - b.order);

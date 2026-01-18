@@ -51,10 +51,10 @@ export class MigrationService {
    */
   private static async deletePrefix(prefix: Deno.KvKey): Promise<number> {
     let count = 0;
-    const entries = db.kv.list({ prefix });
+    const entries = await db.list(prefix);
 
-    for await (const entry of entries) {
-      await db.kv.delete(entry.key);
+    for (const entry of entries) {
+      await db.delete(entry.key);
       count++;
     }
 
