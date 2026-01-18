@@ -1,7 +1,7 @@
 import { getDB } from "./db.ts";
 
-const ADMIN_USERNAME = Deno.env.get("ADMIN_USERNAME") || "admin";
-const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASSWORD") || "password";
+const ADMIN_USERNAME = Deno.env.get("ADMIN_USER");
+const ADMIN_PASSWORD = Deno.env.get("ADMIN_PASS");
 
 export function validateCredentials(username: string, password: string): boolean {
   return username === ADMIN_USERNAME && password === ADMIN_PASSWORD;
