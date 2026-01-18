@@ -135,6 +135,9 @@ export const KvKeys = {
   // Testimonial keys: ["testimonial", "keys", keyId]
   testimonialKey: (keyId: string) => ["testimonial", "keys", keyId],
 
+  // Links (for Linktree-style homepage): ["links", linkId]
+  link: (linkId: string) => ["links", linkId],
+
   // Prefixes for listing
   allPrayers: () => ["prayers"],
   allPageViews: () => ["analytics", "pageviews"],
