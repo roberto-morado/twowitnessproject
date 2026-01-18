@@ -1,6 +1,6 @@
 /**
  * Auth Controller
- * Handles login, logout, and dashboard access
+ * Handles login and logout for Linktree admin
  */
 
 import type { Controller, Route } from "@core/types.ts";
@@ -9,8 +9,6 @@ import { AuthService } from "../services/auth.service.ts";
 import { RateLimitService } from "../services/ratelimit.service.ts";
 import { CsrfService } from "../services/csrf.service.ts";
 import { renderLogin } from "../views/admin/login.view.ts";
-import { renderDashboard } from "../views/admin/dashboard.view.ts";
-import { renderLoginAttempts } from "../views/admin/login-attempts.view.ts";
 
 export class AuthController implements Controller {
   getRoutes(): Route[] {
@@ -26,17 +24,12 @@ export class AuthController implements Controller {
         handler: this.handleLogin.bind(this),
       },
       {
-        method: "GET",
-        pattern: "/dashboard",
-        handler: this.showDashboard.bind(this),
-      },
-      {
-        method: "GET",
-        pattern: "/dashboard/login-attempts",
-        handler: this.showLoginAttempts.bind(this),
-      },
-      {
         method: "POST",
+        pattern: "/logout",
+        handler: this.handleLogout.bind(this),
+      },
+      {
+        method: "GET",
         pattern: "/logout",
         handler: this.handleLogout.bind(this),
       },
@@ -183,54 +176,7 @@ export class AuthController implements Controller {
   }
 
   /**
-   * GET /dashboard - Redirect to dashboard prayers (requires auth)
-   */
-  private async showDashboard(request: Request): Promise<Response> {
-    // Check authentication
-    const cookieHeader = request.headers.get("Cookie");
-    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
-
-    if (!sessionId) {
-      return ResponseFactory.redirect("/login");
-    }
-
-    const username = await AuthService.validateSession(sessionId);
-
-    if (!username) {
-      return ResponseFactory.redirect("/login");
-    }
-
-    // Redirect to prayers dashboard (default tab)
-    return ResponseFactory.redirect("/dashboard/prayers");
-  }
-
-  /**
-   * GET /dashboard/login-attempts - Show recent login attempts (requires auth)
-   */
-  private async showLoginAttempts(request: Request): Promise<Response> {
-    // Check authentication
-    const cookieHeader = request.headers.get("Cookie");
-    const sessionId = AuthService.getSessionFromCookie(cookieHeader);
-
-    if (!sessionId) {
-      return ResponseFactory.redirect("/login");
-    }
-
-    const username = await AuthService.validateSession(sessionId);
-
-    if (!username) {
-      return ResponseFactory.redirect("/login");
-    }
-
-    // Fetch recent login attempts (last 100)
-    const attempts = await AuthService.getRecentLoginAttempts(100);
-
-    const html = renderLoginAttempts({ attempts, username });
-    return ResponseFactory.html(html);
-  }
-
-  /**
-   * POST /logout - Handle logout
+   * POST/GET /logout - Handle logout
    */
   private async handleLogout(request: Request): Promise<Response> {
     const cookieHeader = request.headers.get("Cookie");
