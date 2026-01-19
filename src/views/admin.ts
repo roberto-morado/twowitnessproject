@@ -71,20 +71,27 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
     <section class="admin-section">
       <h2>Manage Links</h2>
       ${links.length === 0 ? '<p class="empty-state">No links yet. Add one above!</p>' : `
-        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">💡 Drag and drop to reorder</p>
-        <div class="links-list" id="linksList">
-          ${links.map(link => `
-            <div class="link-item" draggable="true" data-id="${link.id}">
-              <div class="drag-handle" title="Drag to reorder">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="4" y1="8" x2="20" y2="8"></line>
-                  <line x1="4" y1="16" x2="20" y2="16"></line>
-                </svg>
-              </div>
+        <div class="links-list">
+          ${links.map((link, index) => `
+            <div class="link-item">
               <div class="link-info">
                 <strong>${escapeHtml(link.name)}</strong>
               </div>
               <div class="link-actions">
+                ${index > 0 ? `
+                  <form method="POST" action="/admin/links/move" style="display: inline;">
+                    <input type="hidden" name="id" value="${link.id}">
+                    <input type="hidden" name="direction" value="up">
+                    <button type="submit" class="move-btn" title="Move up">⬆️</button>
+                  </form>
+                ` : '<span class="move-btn disabled">⬆️</span>'}
+                ${index < links.length - 1 ? `
+                  <form method="POST" action="/admin/links/move" style="display: inline;">
+                    <input type="hidden" name="id" value="${link.id}">
+                    <input type="hidden" name="direction" value="down">
+                    <button type="submit" class="move-btn" title="Move down">⬇️</button>
+                  </form>
+                ` : '<span class="move-btn disabled">⬇️</span>'}
                 <button onclick="editLink('${link.id}', '${escapeHtml(link.name)}', '${escapeHtml(link.url)}')">Edit</button>
                 <form method="POST" action="/admin/links/delete" style="display: inline;">
                   <input type="hidden" name="id" value="${link.id}">
@@ -154,110 +161,6 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
           colorPicker.value = value;
         }
       });
-    }
-
-    // Drag and drop reordering (desktop and mobile)
-    const linksList = document.getElementById('linksList');
-    if (linksList) {
-      let draggedElement = null;
-      let touchY = 0;
-
-      // Save order to server
-      async function saveOrder() {
-        const items = Array.from(linksList.querySelectorAll('.link-item'));
-        const orderedIds = items.map(item => item.getAttribute('data-id'));
-
-        try {
-          const response = await fetch('/admin/links/reorder', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ orderedIds }),
-          });
-
-          if (!response.ok) {
-            console.error('Failed to save order');
-          }
-        } catch (error) {
-          console.error('Error saving order:', error);
-        }
-      }
-
-      function getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('.link-item:not(.dragging)')];
-
-        return draggableElements.reduce((closest, child) => {
-          const box = child.getBoundingClientRect();
-          const offset = y - box.top - box.height / 2;
-
-          if (offset < 0 && offset > closest.offset) {
-            return { offset: offset, element: child };
-          } else {
-            return closest;
-          }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
-      }
-
-      // Desktop drag and drop
-      linksList.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('link-item')) {
-          draggedElement = e.target;
-          e.target.classList.add('dragging');
-          e.target.style.opacity = '0.5';
-        }
-      });
-
-      linksList.addEventListener('dragend', (e) => {
-        if (e.target.classList.contains('link-item')) {
-          e.target.classList.remove('dragging');
-          e.target.style.opacity = '';
-          saveOrder();
-        }
-      });
-
-      linksList.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        const afterElement = getDragAfterElement(linksList, e.clientY);
-        if (afterElement == null) {
-          linksList.appendChild(draggedElement);
-        } else {
-          linksList.insertBefore(draggedElement, afterElement);
-        }
-      });
-
-      // Mobile touch events
-      linksList.addEventListener('touchstart', (e) => {
-        const target = e.target.closest('.link-item');
-        if (target) {
-          draggedElement = target;
-          draggedElement.classList.add('dragging');
-          touchY = e.touches[0].clientY;
-        }
-      }, { passive: true });
-
-      linksList.addEventListener('touchmove', (e) => {
-        if (!draggedElement) return;
-
-        e.preventDefault();
-        const touch = e.touches[0];
-        touchY = touch.clientY;
-
-        const afterElement = getDragAfterElement(linksList, touchY);
-        if (afterElement == null) {
-          linksList.appendChild(draggedElement);
-        } else {
-          linksList.insertBefore(draggedElement, afterElement);
-        }
-      });
-
-      linksList.addEventListener('touchend', (e) => {
-        if (draggedElement) {
-          draggedElement.classList.remove('dragging');
-          draggedElement = null;
-          saveOrder();
-        }
-      }, { passive: true });
     }
   </script>
 </body>

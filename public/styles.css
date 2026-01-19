@@ -238,39 +238,12 @@ button:hover {
   background: #f9f9f9;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
-  cursor: move;
   transition: all 0.2s;
-  touch-action: none;
 }
 
 .link-item:hover {
   background: #f0f0f0;
   border-color: #ccc;
-}
-
-.link-item[draggable="true"] {
-  user-select: none;
-}
-
-.link-item.dragging {
-  opacity: 0.5;
-  background: #e0e0e0;
-}
-
-.drag-handle {
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
-  color: #999;
-  cursor: grab;
-}
-
-.drag-handle:active {
-  cursor: grabbing;
-}
-
-.drag-handle svg {
-  pointer-events: none;
 }
 
 .link-info {
@@ -296,12 +269,36 @@ button:hover {
   font-size: 0.875rem;
 }
 
+.link-actions button.move-btn {
+  padding: 0.4rem 0.6rem;
+  font-size: 1.1rem;
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.link-actions button.move-btn:hover {
+  background: var(--color-accent);
+  color: white;
+  opacity: 1;
+}
+
+.link-actions .move-btn.disabled {
+  padding: 0.4rem 0.6rem;
+  font-size: 1.1rem;
+  background: transparent;
+  color: #ccc;
+  cursor: default;
+  opacity: 0.5;
+}
+
 .link-actions button.delete {
   background: #e74c3c;
 }
 
 .link-actions button.delete:hover {
   background: #c0392b;
+  opacity: 1;
 }
 
 /* Modal */
@@ -426,10 +423,6 @@ button:hover {
   .link-item {
     flex-wrap: wrap;
     gap: 0.5rem;
-  }
-
-  .drag-handle {
-    margin-right: 0.5rem;
   }
 
   .link-info {

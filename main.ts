@@ -11,7 +11,7 @@ import {
   deleteLink,
   getAllLinks,
   getLink,
-  reorderLinks,
+  moveLink,
   updateLink,
 } from "./src/links.ts";
 import { getTheme, saveTheme } from "./src/theme.ts";
@@ -168,29 +168,20 @@ async function handleRequest(req: Request): Promise<Response> {
     });
   }
 
-  // Reorder links
-  if (path === "/admin/links/reorder" && method === "POST") {
-    try {
-      const body = await req.json();
-      const orderedIds = body.orderedIds;
+  // Move link up or down
+  if (path === "/admin/links/move" && method === "POST") {
+    const formData = await req.formData();
+    const id = formData.get("id")?.toString() || "";
+    const direction = formData.get("direction")?.toString() as "up" | "down";
 
-      if (Array.isArray(orderedIds)) {
-        await reorderLinks(orderedIds);
-        return new Response(JSON.stringify({ success: true }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-
-      return new Response(JSON.stringify({ error: "Invalid data" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      return new Response(JSON.stringify({ error: "Failed to reorder" }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (id && (direction === "up" || direction === "down")) {
+      await moveLink(id, direction);
     }
+
+    return new Response(null, {
+      status: 302,
+      headers: { "Location": "/admin" },
+    });
   }
 
   // Save theme
