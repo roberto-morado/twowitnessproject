@@ -112,8 +112,9 @@ export function generateColorTheme(baseColor: string): ColorTheme {
   // Light: desaturated, much lighter version for backgrounds
   const light = hslToHex(hsl.h, Math.max(hsl.s - 30, 10), Math.min(hsl.l + 35, 95));
 
-  // Dark: more saturated, darker version for text/shadows
-  const dark = hslToHex(hsl.h, Math.min(hsl.s + 15, 100), Math.max(hsl.l - 40, 15));
+  // Dark: darker version for text on white backgrounds (always readable)
+  // Ensure it's dark enough by capping lightness at 30%
+  const dark = hslToHex(hsl.h, Math.min(hsl.s + 20, 90), Math.min(hsl.l * 0.4, 30));
 
   return {
     primary,
