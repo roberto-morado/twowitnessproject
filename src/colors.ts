@@ -1,10 +1,7 @@
 export interface ColorTheme {
-  primary: string;        // Base color selected by admin
-  secondary: string;      // Analogous color for smooth gradients (40° offset)
-  complementary: string;  // Complementary color for high contrast (opposite on color wheel)
-  accent: string;         // Subtle analogous variant
-  light: string;          // Light background variant
-  dark: string;           // Dark text/shadow variant
+  primary: string;    // Base color selected by admin
+  secondary: string;  // Analogous color for smooth gradients (30° offset)
+  accent: string;     // Darker, saturated version for text/buttons (stays in color family)
 }
 
 /**
@@ -89,7 +86,7 @@ function hslToHex(h: number, s: number, l: number): string {
 
 /**
  * Generate a complete color theme from a single base color
- * Uses color theory to create harmonious colors for gradients and contrast
+ * Simple 3-color system for harmonious, coherent theming
  */
 export function generateColorTheme(baseColor: string): ColorTheme {
   const hsl = hexToHSL(baseColor);
@@ -97,32 +94,22 @@ export function generateColorTheme(baseColor: string): ColorTheme {
   // Primary: the base color
   const primary = baseColor;
 
-  // Secondary: analogous color (45° offset) for smooth, harmonious gradients
-  const secondaryHue = (hsl.h + 45) % 360;
+  // Secondary: analogous color (30° offset) for smooth, harmonious gradient
+  const secondaryHue = (hsl.h + 30) % 360;
   const secondary = hslToHex(secondaryHue, hsl.s, hsl.l);
 
-  // Complementary: opposite color (180°) for high-contrast buttons and accents
-  const complementaryHue = (hsl.h + 180) % 360;
-  const complementary = hslToHex(complementaryHue, hsl.s, hsl.l);
-
-  // Accent: subtle analogous (20° offset) for variation
-  const accentHue = (hsl.h + 20) % 360;
-  const accent = hslToHex(accentHue, Math.min(hsl.s + 10, 100), hsl.l);
-
-  // Light: desaturated, much lighter version for backgrounds
-  const light = hslToHex(hsl.h, Math.max(hsl.s - 30, 10), Math.min(hsl.l + 35, 95));
-
-  // Dark: darker version for text on white backgrounds (always readable)
-  // Ensure it's dark enough by capping lightness at 30%
-  const dark = hslToHex(hsl.h, Math.min(hsl.s + 20, 90), Math.min(hsl.l * 0.4, 30));
+  // Accent: darker, more saturated version of primary for text/buttons
+  // Stays in same color family for coherence, but dark enough for contrast on white
+  const accent = hslToHex(
+    hsl.h,
+    Math.min(hsl.s + 20, 90),
+    Math.min(hsl.l * 0.4, 30)
+  );
 
   return {
     primary,
     secondary,
-    complementary,
     accent,
-    light,
-    dark,
   };
 }
 
@@ -134,10 +121,7 @@ export function generateThemeCSS(theme: ColorTheme): string {
     :root {
       --color-primary: ${theme.primary};
       --color-secondary: ${theme.secondary};
-      --color-complementary: ${theme.complementary};
       --color-accent: ${theme.accent};
-      --color-light: ${theme.light};
-      --color-dark: ${theme.dark};
     }
   `.trim();
 }

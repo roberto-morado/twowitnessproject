@@ -13,10 +13,7 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
     :root {
       --color-primary: ${theme.primary};
       --color-secondary: ${theme.secondary};
-      --color-complementary: ${theme.complementary};
       --color-accent: ${theme.accent};
-      --color-light: ${theme.light};
-      --color-dark: ${theme.dark};
     }
   </style>
 </head>
@@ -45,12 +42,9 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
             </div>
           </div>
           <div class="color-preview">
-            <div class="color-swatch" style="background: ${theme.primary};" title="Primary (base)"></div>
-            <div class="color-swatch" style="background: ${theme.secondary};" title="Secondary (gradient)"></div>
-            <div class="color-swatch" style="background: ${theme.complementary};" title="Complementary (contrast)"></div>
-            <div class="color-swatch" style="background: ${theme.accent};" title="Accent"></div>
-            <div class="color-swatch" style="background: ${theme.light};" title="Light"></div>
-            <div class="color-swatch" style="background: ${theme.dark};" title="Dark"></div>
+            <div class="color-swatch" style="background: ${theme.primary};" title="Primary (base color)"></div>
+            <div class="color-swatch" style="background: ${theme.secondary};" title="Secondary (gradient pair)"></div>
+            <div class="color-swatch" style="background: ${theme.accent};" title="Accent (text & buttons)"></div>
           </div>
         </div>
         <button type="submit">Save Theme</button>
