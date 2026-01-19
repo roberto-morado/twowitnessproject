@@ -65,15 +65,28 @@ export async function deleteLink(id: string): Promise<boolean> {
   return true;
 }
 
-export async function reorderLinks(orderedIds: string[]): Promise<void> {
+export async function moveLink(id: string, direction: "up" | "down"): Promise<boolean> {
   const db = getDB();
+  const allLinks = await getAllLinks();
+  const currentIndex = allLinks.findIndex(l => l.id === id);
 
-  // Update order for each link
-  for (let i = 0; i < orderedIds.length; i++) {
-    const link = await getLink(orderedIds[i]);
-    if (link) {
-      link.order = i + 1;
-      await db.set(["links", link.id], link);
-    }
-  }
+  if (currentIndex === -1) return false;
+  if (direction === "up" && currentIndex === 0) return false;
+  if (direction === "down" && currentIndex === allLinks.length - 1) return false;
+
+  const swapIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+  // Swap order numbers
+  const currentLink = allLinks[currentIndex];
+  const swapLink = allLinks[swapIndex];
+
+  const tempOrder = currentLink.order;
+  currentLink.order = swapLink.order;
+  swapLink.order = tempOrder;
+
+  // Save both links
+  await db.set(["links", currentLink.id], currentLink);
+  await db.set(["links", swapLink.id], swapLink);
+
+  return true;
 }
