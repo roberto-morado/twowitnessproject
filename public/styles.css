@@ -6,7 +6,8 @@
 
 :root {
   --color-primary: #667eea;
-  --color-secondary: #764ba2;
+  --color-secondary: #8e6aeb;
+  --color-complementary: #eab066;
   --color-accent: #7e8aee;
   --color-light: #e8ebf9;
   --color-dark: #3d4c9f;
@@ -69,11 +70,11 @@ header p {
 .link-card h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-complementary);
 }
 
 .link-card svg {
-  color: var(--color-primary);
+  color: var(--color-complementary);
   flex-shrink: 0;
 }
 
@@ -115,13 +116,13 @@ header p {
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--color-complementary);
 }
 
 button {
   width: 100%;
   padding: 0.875rem;
-  background: var(--color-primary);
+  background: var(--color-complementary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -139,7 +140,7 @@ button:hover {
   display: block;
   text-align: center;
   margin-top: 1.5rem;
-  color: var(--color-primary);
+  color: var(--color-complementary);
   text-decoration: none;
 }
 
