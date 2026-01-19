@@ -12,6 +12,7 @@ export function renderLogin(theme: ColorTheme, error?: string): string {
     :root {
       --color-primary: ${theme.primary};
       --color-secondary: ${theme.secondary};
+      --color-complementary: ${theme.complementary};
       --color-accent: ${theme.accent};
       --color-light: ${theme.light};
       --color-dark: ${theme.dark};

@@ -1,9 +1,10 @@
 export interface ColorTheme {
-  primary: string;      // Base color selected by admin
-  secondary: string;    // Complementary color (opposite on color wheel)
-  accent: string;       // Analogous color for accents
-  light: string;        // Light background variant
-  dark: string;         // Dark text/shadow variant
+  primary: string;        // Base color selected by admin
+  secondary: string;      // Analogous color for smooth gradients (40° offset)
+  complementary: string;  // Complementary color for high contrast (opposite on color wheel)
+  accent: string;         // Subtle analogous variant
+  light: string;          // Light background variant
+  dark: string;           // Dark text/shadow variant
 }
 
 /**
@@ -88,7 +89,7 @@ function hslToHex(h: number, s: number, l: number): string {
 
 /**
  * Generate a complete color theme from a single base color
- * Uses color theory to create harmonious complementary colors
+ * Uses color theory to create harmonious colors for gradients and contrast
  */
 export function generateColorTheme(baseColor: string): ColorTheme {
   const hsl = hexToHSL(baseColor);
@@ -96,12 +97,16 @@ export function generateColorTheme(baseColor: string): ColorTheme {
   // Primary: the base color
   const primary = baseColor;
 
-  // Secondary: complementary color (180° opposite on color wheel)
-  const secondaryHue = (hsl.h + 180) % 360;
+  // Secondary: analogous color (45° offset) for smooth, harmonious gradients
+  const secondaryHue = (hsl.h + 45) % 360;
   const secondary = hslToHex(secondaryHue, hsl.s, hsl.l);
 
-  // Accent: analogous color (30° offset for subtle variation)
-  const accentHue = (hsl.h + 30) % 360;
+  // Complementary: opposite color (180°) for high-contrast buttons and accents
+  const complementaryHue = (hsl.h + 180) % 360;
+  const complementary = hslToHex(complementaryHue, hsl.s, hsl.l);
+
+  // Accent: subtle analogous (20° offset) for variation
+  const accentHue = (hsl.h + 20) % 360;
   const accent = hslToHex(accentHue, Math.min(hsl.s + 10, 100), hsl.l);
 
   // Light: desaturated, much lighter version for backgrounds
@@ -113,6 +118,7 @@ export function generateColorTheme(baseColor: string): ColorTheme {
   return {
     primary,
     secondary,
+    complementary,
     accent,
     light,
     dark,
@@ -127,6 +133,7 @@ export function generateThemeCSS(theme: ColorTheme): string {
     :root {
       --color-primary: ${theme.primary};
       --color-secondary: ${theme.secondary};
+      --color-complementary: ${theme.complementary};
       --color-accent: ${theme.accent};
       --color-light: ${theme.light};
       --color-dark: ${theme.dark};
