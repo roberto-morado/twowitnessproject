@@ -1,0 +1,8 @@
+{
+  "entrypoint": "main.ts",
+  "include": [
+    "main.ts",
+    "src/**/*.ts",
+    "public/**/*"
+  ]
+}
