@@ -285,11 +285,6 @@ button:hover {
   font-size: 1.1rem;
 }
 
-.link-info span {
-  color: #666;
-  font-size: 0.9rem;
-}
-
 .link-actions {
   display: flex;
   gap: 0.5rem;
