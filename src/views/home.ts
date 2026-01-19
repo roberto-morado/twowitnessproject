@@ -21,7 +21,7 @@ export function renderHome(links: Link[], theme: ColorTheme): string {
   <div class="container">
     <header>
       <h1>Two Witness Project</h1>
-      <p>Explore our resources and ministries</p>
+      <p>Traveling across USA preaching Christ</p>
     </header>
 
     <main class="links-grid">
