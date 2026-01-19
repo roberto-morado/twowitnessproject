@@ -13,6 +13,7 @@ import {
   getLink,
   updateLink,
 } from "./src/links.ts";
+import { getTheme, saveTheme } from "./src/theme.ts";
 import { renderHome } from "./src/views/home.ts";
 import { renderLogin } from "./src/views/login.ts";
 import { renderAdmin } from "./src/views/admin.ts";
@@ -39,7 +40,8 @@ async function handleRequest(req: Request): Promise<Response> {
   // Public homepage
   if (path === "/" && method === "GET") {
     const links = await getAllLinks();
-    const html = renderHome(links);
+    const themeSettings = await getTheme();
+    const html = renderHome(links, themeSettings.theme);
     return new Response(html, {
       headers: { "Content-Type": "text/html" },
     });
@@ -47,7 +49,8 @@ async function handleRequest(req: Request): Promise<Response> {
 
   // Admin login page
   if (path === "/admin/login" && method === "GET") {
-    const html = renderLogin();
+    const themeSettings = await getTheme();
+    const html = renderLogin(themeSettings.theme);
     return new Response(html, {
       headers: { "Content-Type": "text/html" },
     });
@@ -69,7 +72,8 @@ async function handleRequest(req: Request): Promise<Response> {
         },
       });
     } else {
-      const html = renderLogin("Invalid username or password");
+      const themeSettings = await getTheme();
+      const html = renderLogin(themeSettings.theme, "Invalid username or password");
       return new Response(html, {
         status: 401,
         headers: { "Content-Type": "text/html" },
@@ -108,7 +112,8 @@ async function handleRequest(req: Request): Promise<Response> {
   // Admin dashboard
   if (path === "/admin" && method === "GET") {
     const links = await getAllLinks();
-    const html = renderAdmin(links);
+    const themeSettings = await getTheme();
+    const html = renderAdmin(links, themeSettings.baseColor, themeSettings.theme);
     return new Response(html, {
       headers: { "Content-Type": "text/html" },
     });
@@ -154,6 +159,21 @@ async function handleRequest(req: Request): Promise<Response> {
 
     if (id) {
       await deleteLink(id);
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: { "Location": "/admin" },
+    });
+  }
+
+  // Save theme
+  if (path === "/admin/theme" && method === "POST") {
+    const formData = await req.formData();
+    const baseColor = formData.get("baseColor")?.toString() || "";
+
+    if (baseColor) {
+      await saveTheme(baseColor);
     }
 
     return new Response(null, {
