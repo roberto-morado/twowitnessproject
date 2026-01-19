@@ -11,6 +11,7 @@ import {
   deleteLink,
   getAllLinks,
   getLink,
+  reorderLinks,
   updateLink,
 } from "./src/links.ts";
 import { getTheme, saveTheme } from "./src/theme.ts";
@@ -165,6 +166,31 @@ async function handleRequest(req: Request): Promise<Response> {
       status: 302,
       headers: { "Location": "/admin" },
     });
+  }
+
+  // Reorder links
+  if (path === "/admin/links/reorder" && method === "POST") {
+    try {
+      const body = await req.json();
+      const orderedIds = body.orderedIds;
+
+      if (Array.isArray(orderedIds)) {
+        await reorderLinks(orderedIds);
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      return new Response(JSON.stringify({ error: "Invalid data" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: "Failed to reorder" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
   }
 
   // Save theme

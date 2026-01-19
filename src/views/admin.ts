@@ -71,12 +71,18 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
     <section class="admin-section">
       <h2>Manage Links</h2>
       ${links.length === 0 ? '<p class="empty-state">No links yet. Add one above!</p>' : `
-        <div class="links-list">
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">💡 Drag and drop to reorder</p>
+        <div class="links-list" id="linksList">
           ${links.map(link => `
-            <div class="link-item">
+            <div class="link-item" draggable="true" data-id="${link.id}">
+              <div class="drag-handle" title="Drag to reorder">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="4" y1="8" x2="20" y2="8"></line>
+                  <line x1="4" y1="16" x2="20" y2="16"></line>
+                </svg>
+              </div>
               <div class="link-info">
                 <strong>${escapeHtml(link.name)}</strong>
-                <span>${escapeHtml(link.url)}</span>
               </div>
               <div class="link-actions">
                 <button onclick="editLink('${link.id}', '${escapeHtml(link.name)}', '${escapeHtml(link.url)}')">Edit</button>
@@ -137,16 +143,87 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
     const colorPicker = document.getElementById('baseColor');
     const colorHex = document.getElementById('baseColorHex');
 
-    colorPicker.addEventListener('input', (e) => {
-      colorHex.value = e.target.value;
-    });
+    if (colorPicker && colorHex) {
+      colorPicker.addEventListener('input', (e) => {
+        colorHex.value = e.target.value;
+      });
 
-    colorHex.addEventListener('input', (e) => {
-      const value = e.target.value;
-      if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-        colorPicker.value = value;
+      colorHex.addEventListener('input', (e) => {
+        const value = e.target.value;
+        if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+          colorPicker.value = value;
+        }
+      });
+    }
+
+    // Drag and drop reordering
+    const linksList = document.getElementById('linksList');
+    if (linksList) {
+      let draggedElement = null;
+
+      linksList.addEventListener('dragstart', (e) => {
+        if (e.target.classList.contains('link-item')) {
+          draggedElement = e.target;
+          e.target.style.opacity = '0.5';
+        }
+      });
+
+      linksList.addEventListener('dragend', (e) => {
+        if (e.target.classList.contains('link-item')) {
+          e.target.style.opacity = '';
+        }
+      });
+
+      linksList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(linksList, e.clientY);
+        if (afterElement == null) {
+          linksList.appendChild(draggedElement);
+        } else {
+          linksList.insertBefore(draggedElement, afterElement);
+        }
+      });
+
+      linksList.addEventListener('drop', async (e) => {
+        e.preventDefault();
+
+        // Get the new order of IDs
+        const items = Array.from(linksList.querySelectorAll('.link-item'));
+        const orderedIds = items.map(item => item.getAttribute('data-id'));
+
+        // Send to server
+        try {
+          const response = await fetch('/admin/links/reorder', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ orderedIds }),
+          });
+
+          if (!response.ok) {
+            console.error('Failed to save order');
+          }
+        } catch (error) {
+          console.error('Error saving order:', error);
+        }
+      });
+
+      function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.link-item:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          const offset = y - box.top - box.height / 2;
+
+          if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+          } else {
+            return closest;
+          }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
       }
-    });
+    }
   </script>
 </body>
 </html>`;

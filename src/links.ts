@@ -64,3 +64,16 @@ export async function deleteLink(id: string): Promise<boolean> {
   await db.delete(["links", id]);
   return true;
 }
+
+export async function reorderLinks(orderedIds: string[]): Promise<void> {
+  const db = getDB();
+
+  // Update order for each link
+  for (let i = 0; i < orderedIds.length; i++) {
+    const link = await getLink(orderedIds[i]);
+    if (link) {
+      link.order = i + 1;
+      await db.set(["links", link.id], link);
+    }
+  }
+}
