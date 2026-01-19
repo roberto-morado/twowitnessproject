@@ -1,4 +1,6 @@
-export function renderLogin(error?: string): string {
+import { ColorTheme } from "../colors.ts";
+
+export function renderLogin(theme: ColorTheme, error?: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +8,15 @@ export function renderLogin(error?: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --color-primary: ${theme.primary};
+      --color-secondary: ${theme.secondary};
+      --color-accent: ${theme.accent};
+      --color-light: ${theme.light};
+      --color-dark: ${theme.dark};
+    }
+  </style>
 </head>
 <body>
   <div class="container">

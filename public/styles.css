@@ -4,9 +4,17 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-primary: #667eea;
+  --color-secondary: #764ba2;
+  --color-accent: #7e8aee;
+  --color-light: #e8ebf9;
+  --color-dark: #3d4c9f;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   min-height: 100vh;
   padding: 2rem 1rem;
 }
@@ -61,11 +69,11 @@ header p {
 .link-card h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #667eea;
+  color: var(--color-primary);
 }
 
 .link-card svg {
-  color: #667eea;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -107,13 +115,13 @@ header p {
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 button {
   width: 100%;
   padding: 0.875rem;
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -124,14 +132,14 @@ button {
 }
 
 button:hover {
-  background: #5568d3;
+  background: var(--color-dark);
 }
 
 .back-link {
   display: block;
   text-align: center;
   margin-top: 1.5rem;
-  color: #667eea;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -312,6 +320,57 @@ button:hover {
 
 .modal-actions button[type="button"]:hover {
   background: #7f8c8d;
+}
+
+/* Theme Customization */
+.theme-row {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.color-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.color-input-group input[type="color"] {
+  width: 60px;
+  height: 45px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.color-input-group input[type="text"] {
+  width: 120px;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: monospace;
+}
+
+.color-preview {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  cursor: help;
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
 }
 
 /* Responsive */

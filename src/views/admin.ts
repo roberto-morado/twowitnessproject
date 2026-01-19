@@ -1,6 +1,7 @@
 import { Link } from "../links.ts";
+import { ColorTheme } from "../colors.ts";
 
-export function renderAdmin(links: Link[], message?: string): string {
+export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme, message?: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,15 @@ export function renderAdmin(links: Link[], message?: string): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --color-primary: ${theme.primary};
+      --color-secondary: ${theme.secondary};
+      --color-accent: ${theme.accent};
+      --color-light: ${theme.light};
+      --color-dark: ${theme.dark};
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -20,6 +30,30 @@ export function renderAdmin(links: Link[], message?: string): string {
     </header>
 
     ${message ? `<div class="success">${message}</div>` : ""}
+
+    <section class="admin-section">
+      <h2>Theme Customization</h2>
+      <p style="margin-bottom: 1.5rem; color: #666;">Choose a base color and we'll automatically generate a harmonious color scheme using color theory.</p>
+      <form method="POST" action="/admin/theme" class="admin-form">
+        <div class="theme-row">
+          <div class="form-group">
+            <label for="baseColor">Base Color</label>
+            <div class="color-input-group">
+              <input type="color" id="baseColor" name="baseColor" value="${baseColor}" required>
+              <input type="text" id="baseColorHex" value="${baseColor}" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#667eea">
+            </div>
+          </div>
+          <div class="color-preview">
+            <div class="color-swatch" style="background: ${theme.primary};" title="Primary"></div>
+            <div class="color-swatch" style="background: ${theme.secondary};" title="Secondary (Complementary)"></div>
+            <div class="color-swatch" style="background: ${theme.accent};" title="Accent"></div>
+            <div class="color-swatch" style="background: ${theme.light};" title="Light"></div>
+            <div class="color-swatch" style="background: ${theme.dark};" title="Dark"></div>
+          </div>
+        </div>
+        <button type="submit">Save Theme</button>
+      </form>
+    </section>
 
     <section class="admin-section">
       <h2>Add New Link</h2>
@@ -84,6 +118,7 @@ export function renderAdmin(links: Link[], message?: string): string {
   </div>
 
   <script>
+    // Link editing functions
     function editLink(id, name, url) {
       document.getElementById('edit-id').value = id;
       document.getElementById('edit-name').value = name;
@@ -101,6 +136,21 @@ export function renderAdmin(links: Link[], message?: string): string {
         closeModal();
       }
     }
+
+    // Color picker sync
+    const colorPicker = document.getElementById('baseColor');
+    const colorHex = document.getElementById('baseColorHex');
+
+    colorPicker.addEventListener('input', (e) => {
+      colorHex.value = e.target.value;
+    });
+
+    colorHex.addEventListener('input', (e) => {
+      const value = e.target.value;
+      if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+        colorPicker.value = value;
+      }
+    });
   </script>
 </body>
 </html>`;

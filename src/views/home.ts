@@ -1,6 +1,7 @@
 import { Link } from "../links.ts";
+import { ColorTheme } from "../colors.ts";
 
-export function renderHome(links: Link[]): string {
+export function renderHome(links: Link[], theme: ColorTheme): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,15 @@ export function renderHome(links: Link[]): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Two Witness Project</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --color-primary: ${theme.primary};
+      --color-secondary: ${theme.secondary};
+      --color-accent: ${theme.accent};
+      --color-light: ${theme.light};
+      --color-dark: ${theme.dark};
+    }
+  </style>
 </head>
 <body>
   <div class="container">
