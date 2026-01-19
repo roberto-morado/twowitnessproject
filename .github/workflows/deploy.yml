@@ -1,0 +1,43 @@
+name: Deploy to Deno Deploy
+
+on:
+  push:
+    branches:
+      - claude/codebase-audit-01PNYLRpMjYoxDzadG58Zjq3
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    name: Deploy to Deno Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Verify Deno installation
+        run: deno --version
+
+      - name: Check TypeScript types
+        run: deno check main.ts
+
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "twowitnessproject"
+          entrypoint: "main.ts"
+          root: "."
