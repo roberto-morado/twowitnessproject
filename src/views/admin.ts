@@ -156,42 +156,17 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
       });
     }
 
-    // Drag and drop reordering
+    // Drag and drop reordering (desktop and mobile)
     const linksList = document.getElementById('linksList');
     if (linksList) {
       let draggedElement = null;
+      let touchY = 0;
 
-      linksList.addEventListener('dragstart', (e) => {
-        if (e.target.classList.contains('link-item')) {
-          draggedElement = e.target;
-          e.target.style.opacity = '0.5';
-        }
-      });
-
-      linksList.addEventListener('dragend', (e) => {
-        if (e.target.classList.contains('link-item')) {
-          e.target.style.opacity = '';
-        }
-      });
-
-      linksList.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        const afterElement = getDragAfterElement(linksList, e.clientY);
-        if (afterElement == null) {
-          linksList.appendChild(draggedElement);
-        } else {
-          linksList.insertBefore(draggedElement, afterElement);
-        }
-      });
-
-      linksList.addEventListener('drop', async (e) => {
-        e.preventDefault();
-
-        // Get the new order of IDs
+      // Save order to server
+      async function saveOrder() {
         const items = Array.from(linksList.querySelectorAll('.link-item'));
         const orderedIds = items.map(item => item.getAttribute('data-id'));
 
-        // Send to server
         try {
           const response = await fetch('/admin/links/reorder', {
             method: 'POST',
@@ -207,7 +182,7 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
         } catch (error) {
           console.error('Error saving order:', error);
         }
-      });
+      }
 
       function getDragAfterElement(container, y) {
         const draggableElements = [...container.querySelectorAll('.link-item:not(.dragging)')];
@@ -223,6 +198,66 @@ export function renderAdmin(links: Link[], baseColor: string, theme: ColorTheme,
           }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
       }
+
+      // Desktop drag and drop
+      linksList.addEventListener('dragstart', (e) => {
+        if (e.target.classList.contains('link-item')) {
+          draggedElement = e.target;
+          e.target.classList.add('dragging');
+          e.target.style.opacity = '0.5';
+        }
+      });
+
+      linksList.addEventListener('dragend', (e) => {
+        if (e.target.classList.contains('link-item')) {
+          e.target.classList.remove('dragging');
+          e.target.style.opacity = '';
+          saveOrder();
+        }
+      });
+
+      linksList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(linksList, e.clientY);
+        if (afterElement == null) {
+          linksList.appendChild(draggedElement);
+        } else {
+          linksList.insertBefore(draggedElement, afterElement);
+        }
+      });
+
+      // Mobile touch events
+      linksList.addEventListener('touchstart', (e) => {
+        const target = e.target.closest('.link-item');
+        if (target) {
+          draggedElement = target;
+          draggedElement.classList.add('dragging');
+          touchY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      linksList.addEventListener('touchmove', (e) => {
+        if (!draggedElement) return;
+
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchY = touch.clientY;
+
+        const afterElement = getDragAfterElement(linksList, touchY);
+        if (afterElement == null) {
+          linksList.appendChild(draggedElement);
+        } else {
+          linksList.insertBefore(draggedElement, afterElement);
+        }
+      });
+
+      linksList.addEventListener('touchend', (e) => {
+        if (draggedElement) {
+          draggedElement.classList.remove('dragging');
+          draggedElement = null;
+          saveOrder();
+        }
+      }, { passive: true });
     }
   </script>
 </body>
