@@ -42,7 +42,7 @@ async function handleRequest(req: Request): Promise<Response> {
     try {
       const file = await Deno.readTextFile("./public/srm.txt");
       return new Response(file, {
-        headers: { "Content-Type": "text/plain" },
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
       });
     } catch {
       return new Response("Not found", { status: 404 });
