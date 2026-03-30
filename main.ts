@@ -38,6 +38,17 @@ async function handleRequest(req: Request): Promise<Response> {
     }
   }
 
+  if (path === "/srm.txt") {
+    try {
+      const file = await Deno.readTextFile("./public/srm.txt");
+      return new Response(file, {
+        headers: { "Content-Type": "text/plain" },
+      });
+    } catch {
+      return new Response("Not found", { status: 404 });
+    }
+  }
+
   // Public homepage
   if (path === "/" && method === "GET") {
     const links = await getAllLinks();
